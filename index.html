@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Dynamic Clock</title>
+  <style>
+    :root { --bg:#111827; --fg:#ffffff; --muted:rgba(255,255,255,.72); }
+    * { box-sizing:border-box; }
+    html,body { width:100%; height:100%; margin:0; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:var(--bg); color:var(--fg); overflow:hidden;
+      transition:background-color 900ms ease, color 500ms ease;
+    }
+    main { min-height:100%; display:grid; place-items:center; padding:6vw; text-align:center; }
+    .content { width:min(1100px,100%); }
+    .clock {
+      font-variant-numeric:tabular-nums;
+      font-size:clamp(4.5rem, 18vw, 13rem);
+      line-height:.9; font-weight:700; letter-spacing:-.06em;
+      text-shadow:0 8px 40px rgba(0,0,0,.12);
+    }
+    .date { margin-top:2rem; font-size:clamp(1rem,2.5vw,1.5rem); color:var(--muted); }
+    .message { margin-top:1.5rem; font-size:clamp(1.8rem,5vw,4rem); font-weight:600; }
+    .status {
+      position:fixed; left:50%; bottom:1.25rem; transform:translateX(-50%);
+      font-size:.8rem; color:var(--muted); opacity:.55; white-space:nowrap;
+    }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="content">
+      <div id="clock" class="clock">00:00:00</div>
+      <div id="date" class="date"></div>
+      <div id="message" class="message"></div>
+    </div>
+  </main>
+  <div id="status" class="status"></div>
+
+<script>
+/*
+  ============================
+  EDIT YOUR SCHEDULE HERE
+  ============================
+
+  Times use the visitor's LOCAL time.
+  Each entry becomes active from its "time" until the next entry.
+
+  Use 24-hour HH:MM format.
+
+  You can add/remove as many entries as you like.
+*/
+const SCHEDULE = [
+  { time: "00:00", background: "#111827", text: "#ffffff", message: "Good night" },
+  { time: "07:00", background: "#2563eb", text: "#ffffff", message: "Good morning" },
+  { time: "09:00", background: "#059669", text: "#ffffff", message: "Time to get started" },
+  { time: "12:00", background: "#eab308", text: "#111827", message: "Lunch time" },
+  { time: "13:00", background: "#16a34a", text: "#ffffff", message: "Afternoon session" },
+  { time: "15:00", background: "#f97316", text: "#ffffff", message: "Break time" },
+  { time: "18:00", background: "#7c3aed", text: "#ffffff", message: "Good evening" },
+  { time: "22:00", background: "#1e293b", text: "#ffffff", message: "Winding down" }
+];
+
+// Set to true if you want seconds displayed; false gives HH:MM.
+const SHOW_SECONDS = true;
+
+// Optional: set to a timezone such as "Europe/London".
+// Leave as null to use each viewer's local timezone.
+const TIME_ZONE = null;
+
+const clockEl = document.getElementById("clock");
+const dateEl = document.getElementById("date");
+const messageEl = document.getElementById("message");
+const statusEl = document.getElementById("status");
+
+function minutesFromTime(time) {
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function getScheduleEntry(totalMinutes) {
+  let active = SCHEDULE[0];
+  for (const entry of SCHEDULE) {
+    if (minutesFromTime(entry.time) <= totalMinutes) active = entry;
+  }
+  return active;
+}
+
+function formatDate(now) {
+  return new Intl.DateTimeFormat(undefined, {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+    ...(TIME_ZONE ? { timeZone: TIME_ZONE } : {})
+  }).format(now);
+}
+
+function getTimeParts(now) {
+  const options = {
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    hour12: false,
+    ...(TIME_ZONE ? { timeZone: TIME_ZONE } : {})
+  };
+  const parts = new Intl.DateTimeFormat("en-GB", options).formatToParts(now);
+  const result = {};
+  for (const p of parts) result[p.type] = p.value;
+  return result;
+}
+
+function update() {
+  const now = new Date();
+  const parts = getTimeParts(now);
+  const hour = Number(parts.hour);
+  const minute = Number(parts.minute);
+  const second = Number(parts.second);
+
+  const totalMinutes = hour * 60 + minute;
+  const active = getScheduleEntry(totalMinutes);
+
+  clockEl.textContent = SHOW_SECONDS
+    ? `${parts.hour}:${parts.minute}:${parts.second}`
+    : `${parts.hour}:${parts.minute}`;
+
+  dateEl.textContent = formatDate(now);
+  messageEl.textContent = active.message || "";
+
+  document.documentElement.style.setProperty("--bg", active.background);
+  document.documentElement.style.setProperty("--fg", active.text);
+  document.documentElement.style.setProperty("--muted", active.text + "b8");
+
+  // Shows the active schedule time very subtly; remove this line if unwanted.
+  statusEl.textContent = `Schedule: ${active.time}`;
+
+  document.querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", active.background);
+}
+
+function validateSchedule() {
+  if (!Array.isArray(SCHEDULE) || SCHEDULE.length === 0) {
+    throw new Error("SCHEDULE must contain at least one entry.");
+  }
+  SCHEDULE.forEach((entry, i) => {
+    if (!/^\d{2}:\d{2}$/.test(entry.time)) {
+      throw new Error(`Invalid time at schedule entry ${i + 1}: ${entry.time}`);
+    }
+    const [h, m] = entry.time.split(":").map(Number);
+    if (h > 23 || m > 59) throw new Error(`Invalid time: ${entry.time}`);
+    if (!entry.background || !entry.text) {
+      throw new Error(`Entry ${i + 1} needs background and text colours.`);
+    }
+  });
+  SCHEDULE.sort((a,b) => minutesFromTime(a.time) - minutesFromTime(b.time));
+}
+
+try {
+  validateSchedule();
+  update();
+  setInterval(update, 250);
+} catch (error) {
+  document.body.innerHTML =
+    `<pre style="padding:2rem;font:16px system-ui">Schedule error:\n${error.message}</pre>`;
+}
+</script>
+</body>
+</html>
