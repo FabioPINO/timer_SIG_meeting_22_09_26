@@ -1,167 +1,926 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#111827">
-  <title>Dynamic Clock</title>
-  <style>
-    :root { --bg:#111827; --fg:#ffffff; --muted:rgba(255,255,255,.72); }
-    * { box-sizing:border-box; }
-    html,body { width:100%; height:100%; margin:0; }
-    body {
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:var(--bg); color:var(--fg); overflow:hidden;
-      transition:background-color 900ms ease, color 500ms ease;
-    }
-    main { min-height:100%; display:grid; place-items:center; padding:6vw; text-align:center; }
-    .content { width:min(1100px,100%); }
-    .clock {
-      font-variant-numeric:tabular-nums;
-      font-size:clamp(4.5rem, 18vw, 13rem);
-      line-height:.9; font-weight:700; letter-spacing:-.06em;
-      text-shadow:0 8px 40px rgba(0,0,0,.12);
-    }
-    .date { margin-top:2rem; font-size:clamp(1rem,2.5vw,1.5rem); color:var(--muted); }
-    .message { margin-top:1.5rem; font-size:clamp(1.8rem,5vw,4rem); font-weight:600; }
-    .status {
-      position:fixed; left:50%; bottom:1.25rem; transform:translateX(-50%);
-      font-size:.8rem; color:var(--muted); opacity:.55; white-space:nowrap;
-    }
-    .hidden { display:none; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programme Timer</title>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111827;
+    color: white;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 3vh 4vw;
+  }
+
+  .message {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 600;
+    margin-bottom: 1vh;
+  }
+
+  .timer {
+    font-size: clamp(6rem, 22vw, 16rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+
+  /*
+     Presentation information near bottom
+  */
+
+  .presentation-info {
+    position: fixed;
+    bottom: 8vh;
+    left: 5vw;
+    right: 5vw;
+    text-align: center;
+  }
+
+  .presentation {
+    max-width: 90%;
+    margin: 0 auto;
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .presenter {
+    margin-top: 1vh;
+    font-size: clamp(1.3rem, 2.8vw, 2.3rem);
+    font-weight: 500;
+  }
+
+  .affiliation {
+    margin-top: 0.5vh;
+    font-size: clamp(1rem, 2vw, 1.6rem);
+    font-weight: 400;
+    opacity: 0.85;
+  }
+
+  .status-message {
+    margin-top: 2vh;
+    font-size: clamp(1.2rem, 3vw, 2.2rem);
+    font-weight: 600;
+  }
+
+  .current-time {
+    position: fixed;
+    right: 2vw;
+    bottom: 1.5vh;
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+
+  .schedule-time {
+    position: fixed;
+    left: 2vw;
+    bottom: 1.5vh;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+</style>
 </head>
+
 <body>
-  <main>
-    <div class="content">
-      <div id="clock" class="clock">00:00:00</div>
-      <div id="date" class="date"></div>
-      <div id="message" class="message"></div>
-    </div>
-  </main>
-  <div id="status" class="status"></div>
+
+<div class="container">
+
+  <div id="message" class="message">Programme</div>
+
+  <div id="timer" class="timer">00:00</div>
+
+  <div id="statusMessage" class="status-message"></div>
+
+</div>
+
+
+<!-- Presentation information -->
+
+<div class="presentation-info">
+
+  <div id="presentation" class="presentation"></div>
+
+  <div id="presenter" class="presenter"></div>
+
+  <div id="affiliation" class="affiliation"></div>
+
+</div>
+
+
+<div id="currentTime" class="current-time">
+  00:00:00
+</div>
+
+<div id="scheduleTime" class="schedule-time"></div>
+
 
 <script>
+
+/* ============================================================
+   PRESENTATION TIMING SETTINGS
+   ============================================================
+
+   GREEN
+       0:00 -> 8:30
+
+   YELLOW
+       8:30 -> 10:00
+
+   RED
+       10:00 -> 11:00
+
+   The main presentation countdown is continuous:
+       11:00 -> 00:00
+
+   ------------------------------------------------------------
+
+   QUESTIONS
+       11:00 -> 12:30
+       Separate countdown:
+       01:30 -> 00:00
+
+   ------------------------------------------------------------
+
+   SPEAKER HAND-OVER
+       12:30 -> 13:00
+       Separate countdown:
+       00:30 -> 00:00
+
+   ============================================================ */
+
+
+/* ============================================================
+   TIMING
+   ============================================================ */
+
+const PRESENTATION_DURATION = 13 * 60;
+
+// Green ends at 8:30
+const GREEN_END = 8 * 60 + 30;
+
+// Yellow ends at 10:00
+const YELLOW_END = 10 * 60;
+
+// Red ends / Questions start at 11:00
+const RED_END = 11 * 60;
+
+// Questions end at 12:30
+const QUESTIONS_END = 12 * 60 + 30;
+
+// Hand-over ends at 13:00
+const HANDOVER_END = 13 * 60;
+
+
 /*
-  ============================
-  EDIT YOUR SCHEDULE HERE
-  ============================
+   Separate countdown durations
 
-  Times use the visitor's LOCAL time.
-  Each entry becomes active from its "time" until the next entry.
-
-  Use 24-hour HH:MM format.
-
-  You can add/remove as many entries as you like.
+   These can also be changed independently.
 */
+
+const QUESTIONS_DURATION = 1 * 60 + 30;  // 1:30
+
+const HANDOVER_DURATION = 30;            // 0:30
+
+
+/* ============================================================
+   COLOURS
+   ============================================================ */
+
+const GREEN = "#16a34a";
+const YELLOW = "#eab308";
+const RED = "#dc2626";
+const BLACK = "#000000";
+const GRAY = "#6b7280";
+
+const NORMAL_BACKGROUND = "#111827";
+const NORMAL_TEXT = "#ffffff";
+
+
+/* ============================================================
+   TIME ZONE
+   ============================================================ */
+
+const TIME_ZONE = "Europe/London";
+
+
+/* ============================================================
+   MANUAL PROGRAMME
+   ============================================================ */
+
 const SCHEDULE = [
-  { time: "00:00", background: "#111827", text: "#ffffff", message: "Good night" },
-  { time: "07:00", background: "#2563eb", text: "#ffffff", message: "Good morning" },
-  { time: "09:00", background: "#059669", text: "#ffffff", message: "Time to get started" },
-  { time: "12:00", background: "#eab308", text: "#111827", message: "Lunch time" },
-  { time: "13:00", background: "#16a34a", text: "#ffffff", message: "Afternoon session" },
-  { time: "15:00", background: "#f97316", text: "#ffffff", message: "Break time" },
-  { time: "18:00", background: "#7c3aed", text: "#ffffff", message: "Good evening" },
-  { time: "22:00", background: "#1e293b", text: "#ffffff", message: "Winding down" }
+
+  {
+    time: "08:45",
+    duration: 15,
+    type: "other",
+    message: "Arrival",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+
+  {
+    time: "09:00",
+    duration: 5,
+    type: "other",
+    message: "Welcome",
+    presentationName: "",
+    presenter: "Prof. George Papadakis",
+    affiliation: "Imperial College London"
+  },
+
+  {
+    time: "09:05",
+    duration: 13,
+    type: "presentation",
+    message: "Invited Speaker",
+
+    presentationName:
+      "Can Koopman Be Made Trustworthy for Fluid Dynamics?",
+
+    presenter:
+      "Dr. Matthew Colbrook",
+
+    affiliation:
+      "University of Cambridge"
+  },
+
+  {
+    time: "19:00",
+    duration: 15,
+    type: "break",
+    message: "Coffee Break",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+
+  {
+    time: "20:02",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1",
+
+    presentationName:
+      "Title of the second presentation",
+
+    presenter:
+      "Name of Presenter",
+
+    affiliation:
+      "University / Institution"
+  },
+
+  {
+    time: "09:46",
+    duration: 13,
+    type: "presentation",
+    message: "Presentation",
+
+    presentationName:
+      "Title of the third presentation",
+
+    presenter:
+      "Name of Presenter",
+
+    affiliation:
+      "University / Institution"
+  },
+
+  {
+    time: "09:59",
+    duration: 30,
+    type: "break",
+    message: "Coffee Break",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+
+  {
+    time: "10:29",
+    duration: 13,
+    type: "presentation",
+    message: "Presentation",
+
+    presentationName:
+      "Title of the fourth presentation",
+
+    presenter:
+      "Name of Presenter",
+
+    affiliation:
+      "University / Institution"
+  }
+
 ];
 
-// Set to true if you want seconds displayed; false gives HH:MM.
-const SHOW_SECONDS = true;
 
-// Optional: set to a timezone such as "Europe/London".
-// Leave as null to use each viewer's local timezone.
-const TIME_ZONE = null;
+/* ============================================================
+   HELPERS
+   ============================================================ */
 
-const clockEl = document.getElementById("clock");
-const dateEl = document.getElementById("date");
-const messageEl = document.getElementById("message");
-const statusEl = document.getElementById("status");
+function timeToSeconds(time) {
 
-function minutesFromTime(time) {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
+  const [hours, minutes] =
+    time.split(":").map(Number);
+
+  return hours * 3600 + minutes * 60;
 }
 
-function getScheduleEntry(totalMinutes) {
-  let active = SCHEDULE[0];
-  for (const entry of SCHEDULE) {
-    if (minutesFromTime(entry.time) <= totalMinutes) active = entry;
-  }
-  return active;
+
+function formatTime(seconds) {
+
+  seconds = Math.max(
+    0,
+    Math.ceil(seconds)
+  );
+
+  const minutes =
+    Math.floor(seconds / 60);
+
+  const secs =
+    seconds % 60;
+
+  return (
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(secs).padStart(2, "0")
+  );
 }
 
-function formatDate(now) {
-  return new Intl.DateTimeFormat(undefined, {
-    weekday: "long", year: "numeric", month: "long", day: "numeric",
-    ...(TIME_ZONE ? { timeZone: TIME_ZONE } : {})
-  }).format(now);
-}
 
-function getTimeParts(now) {
-  const options = {
-    hour: "2-digit", minute: "2-digit", second: "2-digit",
-    hour12: false,
-    ...(TIME_ZONE ? { timeZone: TIME_ZONE } : {})
-  };
-  const parts = new Intl.DateTimeFormat("en-GB", options).formatToParts(now);
+function getLondonTimeParts() {
+
+  const now = new Date();
+
+  const parts =
+    new Intl.DateTimeFormat("en-GB", {
+
+      timeZone: TIME_ZONE,
+
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+
+      hour12: false
+
+    }).formatToParts(now);
+
   const result = {};
-  for (const p of parts) result[p.type] = p.value;
+
+  parts.forEach(part => {
+
+    if (part.type !== "literal") {
+
+      result[part.type] =
+        Number(part.value);
+
+    }
+
+  });
+
   return result;
 }
 
-function update() {
-  const now = new Date();
-  const parts = getTimeParts(now);
-  const hour = Number(parts.hour);
-  const minute = Number(parts.minute);
-  const second = Number(parts.second);
 
-  const totalMinutes = hour * 60 + minute;
-  const active = getScheduleEntry(totalMinutes);
+/* ============================================================
+   PRESENTATION STATE
+   ============================================================ */
 
-  clockEl.textContent = SHOW_SECONDS
-    ? `${parts.hour}:${parts.minute}:${parts.second}`
-    : `${parts.hour}:${parts.minute}`;
+function getPresentationState(elapsedSeconds) {
 
-  dateEl.textContent = formatDate(now);
-  messageEl.textContent = active.message || "";
+  /*
+     GREEN
+     0:00 -> 8:30
 
-  document.documentElement.style.setProperty("--bg", active.background);
-  document.documentElement.style.setProperty("--fg", active.text);
-  document.documentElement.style.setProperty("--muted", active.text + "b8");
+     CONTINUOUS PRESENTATION COUNTDOWN
+  */
 
-  // Shows the active schedule time very subtly; remove this line if unwanted.
-  statusEl.textContent = `Schedule: ${active.time}`;
+  if (elapsedSeconds < GREEN_END) {
 
-  document.querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", active.background);
+    return {
+
+      background: GREEN,
+      text: "#ffffff",
+
+      countdown:
+        RED_END - elapsedSeconds,
+
+      message:
+        "Presentation"
+
+    };
+  }
+
+
+  /*
+     YELLOW
+     8:30 -> 10:00
+
+     SAME COUNTDOWN CONTINUES
+  */
+
+  if (elapsedSeconds < YELLOW_END) {
+
+    return {
+
+      background: YELLOW,
+      text: "#111827",
+
+      countdown:
+        RED_END - elapsedSeconds,
+
+      message:
+        "Presentation"
+
+    };
+  }
+
+
+  /*
+     RED
+     10:00 -> 11:00
+
+     SAME COUNTDOWN CONTINUES
+     AND REACHES ZERO AT 11:00
+  */
+
+  if (elapsedSeconds < RED_END) {
+
+    return {
+
+      background: RED,
+      text: "#ffffff",
+
+      countdown:
+        RED_END - elapsedSeconds,
+
+      message:
+        "Presentation"
+
+    };
+  }
+
+
+  /*
+     BLACK / QUESTIONS
+     11:00 -> 12:30
+
+     RESET COUNTDOWN TO 1:30
+  */
+
+  if (elapsedSeconds < QUESTIONS_END) {
+
+    return {
+
+      background: BLACK,
+      text: "#ffffff",
+
+      countdown:
+        QUESTIONS_DURATION -
+        (elapsedSeconds - RED_END),
+
+      message:
+        "Questions"
+
+    };
+  }
+
+
+  /*
+     GRAY / SPEAKER HAND-OVER
+     12:30 -> 13:00
+
+     RESET COUNTDOWN TO 0:30
+  */
+
+  return {
+
+    background: GRAY,
+    text: "#ffffff",
+
+    countdown:
+      HANDOVER_DURATION -
+      (elapsedSeconds - QUESTIONS_END),
+
+    message:
+      "Speaker Hand-over"
+
+  };
 }
+
+
+/* ============================================================
+   UPDATE
+   ============================================================ */
+
+function update() {
+
+  const london =
+    getLondonTimeParts();
+
+
+  const currentSeconds =
+    london.hour * 3600 +
+    london.minute * 60 +
+    london.second;
+
+
+  /*
+     Current London time
+  */
+
+  document.getElementById(
+    "currentTime"
+  ).textContent =
+
+    `${String(london.hour).padStart(2, "0")}:` +
+    `${String(london.minute).padStart(2, "0")}:` +
+    `${String(london.second).padStart(2, "0")}`;
+
+
+  /*
+     Find current programme item
+  */
+
+  let active = null;
+
+
+  for (
+    let i = 0;
+    i < SCHEDULE.length;
+    i++
+  ) {
+
+    const start =
+      timeToSeconds(
+        SCHEDULE[i].time
+      );
+
+    const end =
+      start +
+      SCHEDULE[i].duration * 60;
+
+
+    if (
+      currentSeconds >= start &&
+      currentSeconds < end
+    ) {
+
+      active =
+        SCHEDULE[i];
+
+      break;
+    }
+  }
+
+
+  /*
+     Nothing scheduled
+  */
+
+  if (!active) {
+
+    document.body.style.backgroundColor =
+      NORMAL_BACKGROUND;
+
+    document.body.style.color =
+      NORMAL_TEXT;
+
+
+    document.getElementById(
+      "message"
+    ).textContent =
+      "Programme";
+
+
+    document.getElementById(
+      "timer"
+    ).textContent =
+      "--:--";
+
+
+    document.getElementById(
+      "presentation"
+    ).textContent =
+      "";
+
+
+    document.getElementById(
+      "presenter"
+    ).textContent =
+      "";
+
+
+    document.getElementById(
+      "affiliation"
+    ).textContent =
+      "";
+
+
+    document.getElementById(
+      "statusMessage"
+    ).textContent =
+      "";
+
+    return;
+  }
+
+
+  const startSeconds =
+    timeToSeconds(active.time);
+
+
+  const elapsedSeconds =
+    currentSeconds -
+    startSeconds;
+
+
+  /*
+     Programme start time
+  */
+
+  document.getElementById(
+    "scheduleTime"
+  ).textContent =
+    `Programme: ${active.time}`;
+
+
+  /* ==========================================================
+     PRESENTATION
+     ========================================================== */
+
+  if (
+    active.type === "presentation"
+  ) {
+
+    const state =
+      getPresentationState(
+        elapsedSeconds
+      );
+
+
+    /*
+       Background colour
+    */
+
+    document.body.style.backgroundColor =
+      state.background;
+
+    document.body.style.color =
+      state.text;
+
+
+    /*
+       Countdown
+    */
+
+    document.getElementById(
+      "timer"
+    ).textContent =
+      formatTime(
+        state.countdown
+      );
+
+
+    /*
+       Main message
+    */
+
+    document.getElementById(
+      "message"
+    ).textContent =
+      active.message;
+
+
+    /*
+       Presentation title
+    */
+
+    document.getElementById(
+      "presentation"
+    ).textContent =
+      active.presentationName;
+
+
+    /*
+       Presenter
+    */
+
+    document.getElementById(
+      "presenter"
+    ).textContent =
+      active.presenter;
+
+
+    /*
+       Affiliation
+    */
+
+    document.getElementById(
+      "affiliation"
+    ).textContent =
+      active.affiliation;
+
+
+    /*
+       Status
+    */
+
+    document.getElementById(
+      "statusMessage"
+    ).textContent =
+      state.message;
+
+  }
+
+
+  /* ==========================================================
+     BREAKS AND OTHER
+     ========================================================== */
+
+  else {
+
+    document.body.style.backgroundColor =
+      NORMAL_BACKGROUND;
+
+    document.body.style.color =
+      NORMAL_TEXT;
+
+
+    const remainingSeconds =
+      active.duration * 60 -
+      elapsedSeconds;
+
+
+    document.getElementById(
+      "timer"
+    ).textContent =
+      formatTime(
+        remainingSeconds
+      );
+
+
+    document.getElementById(
+      "message"
+    ).textContent =
+      active.message;
+
+
+    document.getElementById(
+      "presentation"
+    ).textContent =
+      "";
+
+
+    document.getElementById(
+      "presenter"
+    ).textContent =
+      "";
+
+
+    document.getElementById(
+      "affiliation"
+    ).textContent =
+      "";
+
+
+    document.getElementById(
+      "statusMessage"
+    ).textContent =
+      "";
+  }
+}
+
+
+/* ============================================================
+   VALIDATION
+   ============================================================ */
 
 function validateSchedule() {
-  if (!Array.isArray(SCHEDULE) || SCHEDULE.length === 0) {
-    throw new Error("SCHEDULE must contain at least one entry.");
+
+  if (GREEN_END >= YELLOW_END) {
+
+    console.error(
+      "GREEN_END must be before YELLOW_END."
+    );
   }
-  SCHEDULE.forEach((entry, i) => {
-    if (!/^\d{2}:\d{2}$/.test(entry.time)) {
-      throw new Error(`Invalid time at schedule entry ${i + 1}: ${entry.time}`);
+
+
+  if (YELLOW_END >= RED_END) {
+
+    console.error(
+      "YELLOW_END must be before RED_END."
+    );
+  }
+
+
+  if (RED_END >= QUESTIONS_END) {
+
+    console.error(
+      "RED_END must be before QUESTIONS_END."
+    );
+  }
+
+
+  if (QUESTIONS_END >= HANDOVER_END) {
+
+    console.error(
+      "QUESTIONS_END must be before HANDOVER_END."
+    );
+  }
+
+
+  if (HANDOVER_END > PRESENTATION_DURATION) {
+
+    console.error(
+      "HANDOVER_END must not exceed PRESENTATION_DURATION."
+    );
+  }
+
+
+  SCHEDULE.forEach(item => {
+
+    if (!/^\d{2}:\d{2}$/.test(item.time)) {
+
+      console.error(
+        "Invalid time:",
+        item.time
+      );
     }
-    const [h, m] = entry.time.split(":").map(Number);
-    if (h > 23 || m > 59) throw new Error(`Invalid time: ${entry.time}`);
-    if (!entry.background || !entry.text) {
-      throw new Error(`Entry ${i + 1} needs background and text colours.`);
+
+
+    if (
+      typeof item.duration !== "number" ||
+      item.duration <= 0
+    ) {
+
+      console.error(
+        "Invalid duration:",
+        item
+      );
     }
+
+
+    if (
+      ![
+        "presentation",
+        "break",
+        "other"
+      ].includes(item.type)
+    ) {
+
+      console.error(
+        "Invalid type:",
+        item
+      );
+    }
+
   });
-  SCHEDULE.sort((a,b) => minutesFromTime(a.time) - minutesFromTime(b.time));
 }
 
-try {
-  validateSchedule();
-  update();
-  setInterval(update, 250);
-} catch (error) {
-  document.body.innerHTML =
-    `<pre style="padding:2rem;font:16px system-ui">Schedule error:\n${error.message}</pre>`;
-}
+
+/* ============================================================
+   START
+   ============================================================ */
+
+validateSchedule();
+
+update();
+
+setInterval(
+  update,
+  250
+);
+
 </script>
+
 </body>
 </html>
+```
