@@ -30,29 +30,29 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
     box-sizing: border-box;
-    padding: 3vh 4vw;
+    padding: 6vh 4vw 3vh;
   }
 
+  /* Main message near the top */
   .message {
     font-size: clamp(1.5rem, 4vw, 3rem);
     font-weight: 600;
     margin-bottom: 1vh;
   }
 
+  /* Timer */
   .timer {
     font-size: clamp(6rem, 22vw, 16rem);
     font-weight: 700;
     line-height: 0.9;
     letter-spacing: -0.04em;
+    margin-top: 5vh;
   }
 
-  /*
-     Presentation information near bottom
-  */
-
+  /* Presentation information */
   .presentation-info {
     position: fixed;
     bottom: 8vh;
@@ -61,17 +61,19 @@
     text-align: center;
   }
 
+  /* Presentation title */
   .presentation {
     max-width: 90%;
     margin: 0 auto;
-    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-size: clamp(2.4rem, 5.5vw, 5rem);
     font-weight: 600;
     line-height: 1.15;
   }
 
+  /* Presenter name */
   .presenter {
     margin-top: 1vh;
-    font-size: clamp(1.3rem, 2.8vw, 2.3rem);
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
     font-weight: 500;
   }
 
@@ -82,9 +84,10 @@
     opacity: 0.85;
   }
 
+  /* Text below the timer */
   .status-message {
     margin-top: 2vh;
-    font-size: clamp(1.2rem, 3vw, 2.2rem);
+    font-size: clamp(1.6rem, 3.5vw, 2.8rem);
     font-weight: 600;
   }
 
@@ -181,16 +184,16 @@
 const PRESENTATION_DURATION = 13 * 60;
 
 // Green ends at 8:30
-const GREEN_END = 8 * 60 + 30;
+const GREEN_END = 8 * 60;
 
-// Yellow ends at 10:00
-const YELLOW_END = 10 * 60;
+// Yellow ends at 09:00
+const YELLOW_END = 9 * 60;
 
-// Red ends / Questions start at 11:00
-const RED_END = 11 * 60;
+// Red ends / Questions start at 10:00
+const RED_END = 10 * 60;
 
-// Questions end at 12:30
-const QUESTIONS_END = 12 * 60 + 30;
+// Questions end at 12:00
+const QUESTIONS_END = 12 * 60;
 
 // Hand-over ends at 13:00
 const HANDOVER_END = 13 * 60;
@@ -202,9 +205,9 @@ const HANDOVER_END = 13 * 60;
    These can also be changed independently.
 */
 
-const QUESTIONS_DURATION = 1 * 60 + 30;  // 1:30
+const QUESTIONS_DURATION = 2 * 60;  // 2'
 
-const HANDOVER_DURATION = 30;            // 0:30
+const HANDOVER_DURATION = 60;            // 1'
 
 
 /* ============================================================
@@ -235,8 +238,8 @@ const TIME_ZONE = "Europe/London";
 const SCHEDULE = [
 
   {
-    time: "08:45",
-    duration: 15,
+    time: "08:30",
+    duration: 30,
     type: "other",
     message: "Arrival",
     presentationName: "",
@@ -246,7 +249,7 @@ const SCHEDULE = [
 
   {
     time: "09:00",
-    duration: 5,
+    duration: 2,
     type: "other",
     message: "Welcome",
     presentationName: "",
@@ -255,7 +258,7 @@ const SCHEDULE = [
   },
 
   {
-    time: "09:05",
+    time: "09:02",
     duration: 13,
     type: "presentation",
     message: "Invited Speaker",
@@ -264,14 +267,14 @@ const SCHEDULE = [
       "Can Koopman Be Made Trustworthy for Fluid Dynamics?",
 
     presenter:
-      "Dr. Matthew Colbrook",
+      "Matthew Colbrook",
 
     affiliation:
       "University of Cambridge"
   },
 
   {
-    time: "19:00",
+    time: "09:45",
     duration: 15,
     type: "break",
     message: "Coffee Break",
@@ -281,61 +284,459 @@ const SCHEDULE = [
   },
 
   {
-    time: "20:02",
+    time: "10:00",
     duration: 13,
     type: "presentation",
-    message: "Session 1",
+    message: "Session 1: Dynamical systems and reduced order modelling",
 
     presentationName:
-      "Title of the second presentation",
+      "A Conditional Entropy Approach for the Dimensional Reduction Step in Dynamic Mode Decompositions",
 
     presenter:
-      "Name of Presenter",
+      "Chris Keylock",
 
     affiliation:
-      "University / Institution"
+      ""
   },
 
   {
-    time: "09:46",
+    time: "10:13",
     duration: 13,
     type: "presentation",
-    message: "Presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
 
     presentationName:
-      "Title of the third presentation",
+      "Non-normal weakly nonlinear analysis",
 
     presenter:
-      "Name of Presenter",
+      "Matthew McCormack",
 
     affiliation:
-      "University / Institution"
+      ""
+  },
+  
+  {
+    time: "10:26",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Non-Markovian bilinear reduced-order modelling of partially observed non-autonomous flows",
+
+    presenter:
+      "Priyam Gupta",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "10:39",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Nonlinear evolution of vortical disturbances entrained in the channel-entrance region",
+
+    presenter:
+      "Kaixin Zhu",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "10:52",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Bridging Lyapunov Stability Analysis and Global Linear Stability Analysis in Chaotic Flows via Causal Time Filtering",
+
+    presenter:
+      "Sidhartha Sahu",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "11:05",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Sparse Fourier reduced-order model for parallel turbulent shear flows at high Reynolds number",
+
+    presenter:
+      "Daniel Cooper",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "11:18",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Chaos synchronisation with minimal-energy feedback control",
+
+    presenter:
+      "Liang Fang",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "11:31",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Learning Nonlinear Dynamics of Coherent Structures from Data for Sound Generation",
+
+    presenter:
+      "Zhong-Nan Wang",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "11:44",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Reduced models for zonal-flow feedback on tidally forced inertial waves in stars and planets",
+
+    presenter:
+      "Calum Skene",
+
+    affiliation:
+      ""
   },
 
   {
-    time: "09:59",
-    duration: 30,
+    time: "11:57",
+    duration: 13,
     type: "break",
-    message: "Coffee Break",
+    message: "Flash talks",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+  
+  {
+    time: "12:20",
+    duration: 20,
+    type: "break",
+    message: "Lunch",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+  
+  {
+    time: "13:20",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Revisiting the stability of a developing flow in the entrance region of a circular pipe",
+
+    presenter:
+      "Bo Yuan",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "13:33",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Thermomagnetic instability of Taylor-Couette flow in ferrofluids",
+
+    presenter:
+      "Junho Park",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "13:46",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "M-OWNS: carrier-wave factored one-way marching for efficient boundary-layer instability modelling",
+
+    presenter:
+      "Elliot James Badcock",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "13:59",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Modelling, Stability and Control of Phase Changing Liquid Film",
+
+    presenter:
+      "Fabio Pino",
+
+    affiliation:
+      ""
+  },
+
+  {
+    time: "14:12",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Stability of streaky high-supersonic boundary layers over cooled walls",
+
+    presenter:
+      "Pierre Ricco",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "14:12",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Global instability of shear flow produced by infinitesimal surface roughness",
+
+    presenter:
+      " Jonathan J Healey",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "14:38",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      " Instabilities in swirling flows",
+
+    presenter:
+      "Oleg Kirillov ",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "14:51",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Effect of small-scale random roughness on stationary crossflow vortices in three-dimensional boundary layers",
+
+    presenter:
+      "Xuesong Wu",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "15:04",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Elasto-inertial transitions in viscoelastic flows through cylinder arrays",
+
+    presenter:
+      "Miguel Beneitez",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "15:17",
+    duration: 15,
+    type: "break",
+    message: "Coffee Break and Posters",
     presentationName: "",
     presenter: "",
     affiliation: ""
   },
 
   {
-    time: "10:29",
+    time: "15:30",
     duration: 13,
     type: "presentation",
-    message: "Presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
 
     presentationName:
-      "Title of the fourth presentation",
+      "Optimised body force for heat transfer in horizontal heated pipe flow",
 
     presenter:
-      "Name of Presenter",
+      "Ashley Willis",
 
     affiliation:
-      "University / Institution"
+      ""
+  },
+  
+  {
+    time: "15:43",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Continuous data assimilation to estimate polymer conformation from velocity measurements",
+
+    presenter:
+      "Jacob Holford",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "15:56",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Remember to \"forget\": overcoming the difficulty of assimilating data longer than Lyapunov time from an information theoretical perspective",
+
+    presenter:
+      "Lloyd Fung",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "16:09",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Acceleration of Variational Optimisation for Finding Turbulent Invariant Solutions using Distributed Heterogeneous Computing",
+
+    presenter:
+      "Thomas Burton",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "16:22",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      " Relaminarising turbulence via nonlinear optimisation",
+
+    presenter:
+      "Robert Charles Bennett",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "16:35",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Adjoint-based Bayesian inference for improved RANS modelling in flow MRI",
+
+    presenter:
+      "Claire Namuroy",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "16:48",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Bayesian inverse periodic Navier-Stokes problems: applications to 4D flow MRI",
+
+    presenter:
+      "Thomas Cheetham",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "17:01",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      " Resonance to rest: Modelling structural ringing in the lift response of impulsively pitched airfoils",
+
+    presenter:
+      "Christian Toma",
+
+    affiliation:
+      ""
+  },
+  
+  {
+    time: "17:14",
+    duration: 16,
+    type: "other",
+    message: "Final comments, event closure",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
   }
 
 ];
@@ -626,22 +1027,16 @@ function update() {
       "--:--";
 
 
-    document.getElementById(
-      "presentation"
-    ).textContent =
-      "";
+    document.getElementById("presentation").textContent = "";
+    document.getElementById("presentation").style.display = "";
 
 
-    document.getElementById(
-      "presenter"
-    ).textContent =
-      "";
+    document.getElementById("presenter").textContent = "";
+    document.getElementById("presenter").style.display = "";
 
 
-    document.getElementById(
-      "affiliation"
-    ).textContent =
-      "";
+    document.getElementById("affiliation").textContent = "";
+    document.getElementById("affiliation").style.display = "";
 
 
     document.getElementById(
@@ -758,6 +1153,15 @@ function update() {
     ).textContent =
       state.message;
 
+    // Hide presentation details during speaker hand-over.
+    const isHandOver = elapsedSeconds >= QUESTIONS_END;
+    document.getElementById("presentation").style.display =
+      isHandOver ? "none" : "";
+    document.getElementById("presenter").style.display =
+      isHandOver ? "none" : "";
+    document.getElementById("affiliation").style.display =
+      isHandOver ? "none" : "";
+
   }
 
 
@@ -793,22 +1197,16 @@ function update() {
       active.message;
 
 
-    document.getElementById(
-      "presentation"
-    ).textContent =
-      "";
+    document.getElementById("presentation").textContent = "";
+    document.getElementById("presentation").style.display = "";
 
 
-    document.getElementById(
-      "presenter"
-    ).textContent =
-      "";
+    document.getElementById("presenter").textContent = "";
+    document.getElementById("presenter").style.display = "";
 
 
-    document.getElementById(
-      "affiliation"
-    ).textContent =
-      "";
+    document.getElementById("affiliation").textContent = "";
+    document.getElementById("affiliation").style.display = "";
 
 
     document.getElementById(
