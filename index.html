@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,6 +107,41 @@
     font-size: 0.9rem;
     opacity: 0.7;
   }
+
+  /* ============================================================
+     SPECIAL INVITED SPEAKER PRESENTATION
+
+     This changes only the typography and layout.
+     It does not change any background or text colours.
+     ============================================================ */
+
+  .invited-speaker .presentation {
+    font-size: clamp(2.8rem, 6.5vw, 6rem);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .invited-speaker .presenter {
+    font-size: clamp(2.2rem, 4.8vw, 3.8rem);
+    font-weight: 700;
+  }
+
+  .invited-speaker .affiliation {
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  }
+
+  .invited-label {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.5vh;
+  }
+
+  /* Ensure the invited label is hidden unless needed */
+  .invited-label:empty {
+    display: none;
+  }
 </style>
 </head>
 
@@ -121,10 +157,11 @@
 
 </div>
 
-
 <!-- Presentation information -->
 
 <div class="presentation-info">
+
+  <div id="invitedLabel" class="invited-label"></div>
 
   <div id="presentation" class="presentation"></div>
 
@@ -133,7 +170,6 @@
   <div id="affiliation" class="affiliation"></div>
 
 </div>
-
 
 <div id="currentTime" class="current-time">
   00:00:00
@@ -149,30 +185,30 @@
    ============================================================
 
    GREEN
-       0:00 -> 8:30
+       0:00 -> 8:00
 
    YELLOW
-       8:30 -> 10:00
+       8:00 -> 9:00
 
    RED
-       10:00 -> 11:00
+       9:00 -> 10:00
 
    The main presentation countdown is continuous:
-       11:00 -> 00:00
+       10:00 -> 00:00
 
    ------------------------------------------------------------
 
    QUESTIONS
-       11:00 -> 12:30
+       10:00 -> 12:00
        Separate countdown:
-       01:30 -> 00:00
+       02:00 -> 00:00
 
    ------------------------------------------------------------
 
    SPEAKER HAND-OVER
-       12:30 -> 13:00
+       12:00 -> 13:00
        Separate countdown:
-       00:30 -> 00:00
+       01:00 -> 00:00
 
    ============================================================ */
 
@@ -183,10 +219,10 @@
 
 const PRESENTATION_DURATION = 13 * 60;
 
-// Green ends at 8:30
+// Green ends at 8:00
 const GREEN_END = 8 * 60;
 
-// Yellow ends at 09:00
+// Yellow ends at 9:00
 const YELLOW_END = 9 * 60;
 
 // Red ends / Questions start at 10:00
@@ -199,19 +235,19 @@ const QUESTIONS_END = 12 * 60;
 const HANDOVER_END = 13 * 60;
 
 
-/*
-   Separate countdown durations
+/* ============================================================
+   SEPARATE COUNTDOWN DURATIONS
+   ============================================================ */
 
-   These can also be changed independently.
-*/
+const QUESTIONS_DURATION = 2 * 60;  // 2 minutes
 
-const QUESTIONS_DURATION = 2 * 60;  // 2'
-
-const HANDOVER_DURATION = 60;            // 1'
+const HANDOVER_DURATION = 60;       // 1 minute
 
 
 /* ============================================================
    COLOURS
+
+   These remain exactly as in the original script.
    ============================================================ */
 
 const GREEN = "#16a34a";
@@ -260,7 +296,7 @@ const SCHEDULE = [
   {
     time: "09:05",
     duration: 40,
-    type: "presentation",
+    type: "invited",
     message: "Invited Speaker",
 
     presentationName:
@@ -314,7 +350,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "10:26",
     duration: 13,
@@ -330,7 +366,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "10:39",
     duration: 13,
@@ -346,7 +382,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "10:52",
     duration: 13,
@@ -362,7 +398,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "11:05",
     duration: 13,
@@ -378,7 +414,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "11:18",
     duration: 13,
@@ -394,7 +430,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "11:31",
     duration: 13,
@@ -410,7 +446,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "11:44",
     duration: 13,
@@ -436,84 +472,91 @@ const SCHEDULE = [
     presenter: "",
     affiliation: ""
   },
-  
-  
+
   {
     time: "11:57",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Resonance in non-isothermal glass fiber drawing",
+    presentationName:
+      "Resonance in non-isothermal glass fiber drawing",
     presenter: "Julien Philippi",
     affiliation: ""
   },
-    
+
   {
     time: "11:59",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Bayesian Inference of Arterial Mechanical Properties Using a One-Dimensional Blood Flow Model",
+    presentationName:
+      "Bayesian Inference of Arterial Mechanical Properties Using a One-Dimensional Blood Flow Model",
     presenter: "Jose H. Arnal",
     affiliation: ""
   },
-  
+
   {
     time: "12:01",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Discovering dynamic controllers for wake control using partial on-body measurements",
+    presentationName:
+      "Discovering dynamic controllers for wake control using partial on-body measurements",
     presenter: "Junjie Zhang",
     affiliation: ""
   },
-  
+
   {
     time: "12:03",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Two-Way Fluid-Structure Interaction Framework for Synthetic Jet Actuator Modelling",
+    presentationName:
+      "Two-Way Fluid-Structure Interaction Framework for Synthetic Jet Actuator Modelling",
     presenter: "India Agravat",
     affiliation: ""
   },
-  
+
   {
     time: "12:05",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Stability of compressible boundary layers",
+    presentationName:
+      "Stability of compressible boundary layers",
     presenter: "Dimitris Kyriakou",
     affiliation: ""
   },
-  
+
   {
     time: "12:07",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Resonance to rest: Modelling structural ringing in the lift response of impulsively pitched airfoils",
+    presentationName:
+      "Resonance to rest: Modelling structural ringing in the lift response of impulsively pitched airfoils",
     presenter: "Christian Toma",
     affiliation: ""
   },
-  
+
   {
     time: "12:09",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Turbulence inflow generation for pipes and nozzles",
+    presentationName:
+      "Turbulence inflow generation for pipes and nozzles",
     presenter: "Benjamin Richards",
     affiliation: ""
   },
-  
+
   {
     time: "12:11",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Supersonic Gortler vortices excited by free-stream vortical disturbances",
+    presentationName:
+      "Supersonic Gortler vortices excited by free-stream vortical disturbances",
     presenter: "Dongdong Xu",
     affiliation: ""
   },
@@ -523,22 +566,23 @@ const SCHEDULE = [
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Data-driven inference of subgrid-scale dynamics in turbulent convection",
+    presentationName:
+      "Data-driven inference of subgrid-scale dynamics in turbulent convection",
     presenter: "Omid Ashtari",
     affiliation: ""
   },
-  
+
   {
     time: "12:15",
     duration: 2,
     type: "break",
     message: "Flash talks",
-    presentationName: "Application of the Diffuse Domain Method to a Bayesian Inverse Navier–Stokes Problem",
+    presentationName:
+      "Application of the Diffuse Domain Method to a Bayesian Inverse Navier–Stokes Problem",
     presenter: "Davit Gyulamiryan",
     affiliation: ""
   },
-  
-  
+
   {
     time: "12:15",
     duration: 65,
@@ -548,7 +592,7 @@ const SCHEDULE = [
     presenter: "",
     affiliation: ""
   },
-  
+
   {
     time: "13:20",
     duration: 13,
@@ -564,7 +608,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "13:33",
     duration: 13,
@@ -580,7 +624,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "13:46",
     duration: 13,
@@ -596,7 +640,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "13:59",
     duration: 13,
@@ -628,7 +672,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "14:25",
     duration: 13,
@@ -639,12 +683,12 @@ const SCHEDULE = [
       "Global instability of shear flow produced by infinitesimal surface roughness",
 
     presenter:
-      " Jonathan J Healey",
+      "Jonathan J Healey",
 
     affiliation:
       ""
   },
-  
+
   {
     time: "14:38",
     duration: 13,
@@ -652,15 +696,15 @@ const SCHEDULE = [
     message: "Session 2: Stability and Transition",
 
     presentationName:
-      " Instabilities in swirling flows",
+      "Instabilities in swirling flows",
 
     presenter:
-      "Oleg Kirillov ",
+      "Oleg Kirillov",
 
     affiliation:
       ""
   },
-  
+
   {
     time: "14:51",
     duration: 13,
@@ -676,7 +720,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "15:04",
     duration: 13,
@@ -692,7 +736,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "15:17",
     duration: 15,
@@ -718,7 +762,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "15:43",
     duration: 13,
@@ -734,7 +778,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "15:56",
     duration: 13,
@@ -750,7 +794,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "16:09",
     duration: 13,
@@ -766,7 +810,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "16:22",
     duration: 13,
@@ -774,7 +818,7 @@ const SCHEDULE = [
     message: "Session 3: Data-assimilation and variational optimisation",
 
     presentationName:
-      " Relaminarising turbulence via nonlinear optimisation",
+      "Relaminarising turbulence via nonlinear optimisation",
 
     presenter:
       "Robert Charles Bennett",
@@ -782,7 +826,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "16:35",
     duration: 13,
@@ -798,7 +842,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "16:48",
     duration: 13,
@@ -814,7 +858,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "17:01",
     duration: 13,
@@ -822,7 +866,7 @@ const SCHEDULE = [
     message: "Session 3: Data-assimilation and variational optimisation",
 
     presentationName:
-      " Resonance to rest: Modelling structural ringing in the lift response of impulsively pitched airfoils",
+      "Resonance to rest: Modelling structural ringing in the lift response of impulsively pitched airfoils",
 
     presenter:
       "Christian Toma",
@@ -830,7 +874,7 @@ const SCHEDULE = [
     affiliation:
       ""
   },
-  
+
   {
     time: "17:14",
     duration: 16,
@@ -920,7 +964,7 @@ function getPresentationState(elapsedSeconds) {
 
   /*
      GREEN
-     0:00 -> 8:30
+     0:00 -> 8:00
 
      CONTINUOUS PRESENTATION COUNTDOWN
   */
@@ -939,12 +983,13 @@ function getPresentationState(elapsedSeconds) {
         "Presentation"
 
     };
+
   }
 
 
   /*
      YELLOW
-     8:30 -> 10:00
+     8:00 -> 9:00
 
      SAME COUNTDOWN CONTINUES
   */
@@ -963,15 +1008,16 @@ function getPresentationState(elapsedSeconds) {
         "Presentation"
 
     };
+
   }
 
 
   /*
      RED
-     10:00 -> 11:00
+     9:00 -> 10:00
 
      SAME COUNTDOWN CONTINUES
-     AND REACHES ZERO AT 11:00
+     AND REACHES ZERO AT 10:00
   */
 
   if (elapsedSeconds < RED_END) {
@@ -988,14 +1034,15 @@ function getPresentationState(elapsedSeconds) {
         "Presentation"
 
     };
+
   }
 
 
   /*
      BLACK / QUESTIONS
-     11:00 -> 12:30
+     10:00 -> 12:00
 
-     RESET COUNTDOWN TO 1:30
+     RESET COUNTDOWN TO 2:00
   */
 
   if (elapsedSeconds < QUESTIONS_END) {
@@ -1013,14 +1060,15 @@ function getPresentationState(elapsedSeconds) {
         "Questions"
 
     };
+
   }
 
 
   /*
      GRAY / SPEAKER HAND-OVER
-     12:30 -> 13:00
+     12:00 -> 13:00
 
-     RESET COUNTDOWN TO 0:30
+     RESET COUNTDOWN TO 1:00
   */
 
   return {
@@ -1036,6 +1084,7 @@ function getPresentationState(elapsedSeconds) {
       "Speaker Hand-over"
 
   };
+
 }
 
 
@@ -1047,7 +1096,6 @@ function update() {
 
   const london =
     getLondonTimeParts();
-
 
   const currentSeconds =
     london.hour * 3600 +
@@ -1074,7 +1122,6 @@ function update() {
 
   let active = null;
 
-
   for (
     let i = 0;
     i < SCHEDULE.length;
@@ -1090,7 +1137,6 @@ function update() {
       start +
       SCHEDULE[i].duration * 60;
 
-
     if (
       currentSeconds >= start &&
       currentSeconds < end
@@ -1100,7 +1146,9 @@ function update() {
         SCHEDULE[i];
 
       break;
+
     }
+
   }
 
 
@@ -1116,43 +1164,46 @@ function update() {
     document.body.style.color =
       NORMAL_TEXT;
 
+    // Remove any special invited-speaker layout.
+    document.body.classList.remove("invited-speaker");
 
     document.getElementById(
       "message"
     ).textContent =
       "Programme";
 
-
     document.getElementById(
       "timer"
     ).textContent =
       "--:--";
 
-
     document.getElementById("presentation").textContent = "";
     document.getElementById("presentation").style.display = "";
-
 
     document.getElementById("presenter").textContent = "";
     document.getElementById("presenter").style.display = "";
 
-
     document.getElementById("affiliation").textContent = "";
     document.getElementById("affiliation").style.display = "";
 
+    document.getElementById("invitedLabel").textContent = "";
+    document.getElementById("invitedLabel").style.display = "none";
 
     document.getElementById(
       "statusMessage"
-    ).textContent =
-      "";
+    ).textContent = "";
+
+    document.getElementById(
+      "scheduleTime"
+    ).textContent = "";
 
     return;
+
   }
 
 
   const startSeconds =
     timeToSeconds(active.time);
-
 
   const elapsedSeconds =
     currentSeconds -
@@ -1170,11 +1221,12 @@ function update() {
 
 
   /* ==========================================================
-     PRESENTATION
+     PRESENTATIONS AND INVITED SPEAKERS
      ========================================================== */
 
   if (
-    active.type === "presentation"
+    active.type === "presentation" ||
+    active.type === "invited"
   ) {
 
     const state =
@@ -1185,6 +1237,9 @@ function update() {
 
     /*
        Background colour
+
+       This remains controlled exclusively by the
+       existing presentation timing state.
     */
 
     document.body.style.backgroundColor =
@@ -1192,6 +1247,22 @@ function update() {
 
     document.body.style.color =
       state.text;
+
+
+    /*
+       Apply special invited-speaker layout.
+
+       This changes typography only.
+       It does not change colours.
+    */
+
+    const isInvited =
+      active.type === "invited";
+
+    document.body.classList.toggle(
+      "invited-speaker",
+      isInvited
+    );
 
 
     /*
@@ -1214,6 +1285,20 @@ function update() {
       "message"
     ).textContent =
       active.message;
+
+
+    /*
+       Invited speaker label
+    */
+
+    const invitedLabel =
+      document.getElementById("invitedLabel");
+
+    invitedLabel.textContent =
+      isInvited ? "Invited Speaker" : "";
+
+    invitedLabel.style.display =
+      isInvited ? "" : "none";
 
 
     /*
@@ -1255,20 +1340,31 @@ function update() {
     ).textContent =
       state.message;
 
-    // Hide presentation details during speaker hand-over.
-    const isHandOver = elapsedSeconds >= QUESTIONS_END;
+
+    /*
+       Hide presentation details during speaker hand-over.
+    */
+
+    const isHandOver =
+      elapsedSeconds >= QUESTIONS_END;
+
     document.getElementById("presentation").style.display =
       isHandOver ? "none" : "";
+
     document.getElementById("presenter").style.display =
       isHandOver ? "none" : "";
+
     document.getElementById("affiliation").style.display =
       isHandOver ? "none" : "";
+
+    document.getElementById("invitedLabel").style.display =
+      isHandOver ? "none" : (isInvited ? "" : "none");
 
   }
 
 
   /* ==========================================================
-     BREAKS AND OTHER
+     BREAKS AND OTHER PROGRAMME ITEMS
      ========================================================== */
 
   else {
@@ -1279,11 +1375,18 @@ function update() {
     document.body.style.color =
       NORMAL_TEXT;
 
+    // Remove the invited-speaker layout.
+    document.body.classList.remove("invited-speaker");
+
 
     const remainingSeconds =
       active.duration * 60 -
       elapsedSeconds;
 
+
+    /*
+       Countdown
+    */
 
     document.getElementById(
       "timer"
@@ -1293,29 +1396,43 @@ function update() {
       );
 
 
+    /*
+       Main message
+    */
+
     document.getElementById(
       "message"
     ).textContent =
       active.message;
 
 
+    /*
+       Clear presentation details
+    */
+
     document.getElementById("presentation").textContent = "";
     document.getElementById("presentation").style.display = "";
-
 
     document.getElementById("presenter").textContent = "";
     document.getElementById("presenter").style.display = "";
 
-
     document.getElementById("affiliation").textContent = "";
     document.getElementById("affiliation").style.display = "";
 
+    document.getElementById("invitedLabel").textContent = "";
+    document.getElementById("invitedLabel").style.display = "none";
+
+
+    /*
+       Clear status
+    */
 
     document.getElementById(
       "statusMessage"
-    ).textContent =
-      "";
+    ).textContent = "";
+
   }
+
 }
 
 
@@ -1330,40 +1447,40 @@ function validateSchedule() {
     console.error(
       "GREEN_END must be before YELLOW_END."
     );
-  }
 
+  }
 
   if (YELLOW_END >= RED_END) {
 
     console.error(
       "YELLOW_END must be before RED_END."
     );
-  }
 
+  }
 
   if (RED_END >= QUESTIONS_END) {
 
     console.error(
       "RED_END must be before QUESTIONS_END."
     );
-  }
 
+  }
 
   if (QUESTIONS_END >= HANDOVER_END) {
 
     console.error(
       "QUESTIONS_END must be before HANDOVER_END."
     );
-  }
 
+  }
 
   if (HANDOVER_END > PRESENTATION_DURATION) {
 
     console.error(
       "HANDOVER_END must not exceed PRESENTATION_DURATION."
     );
-  }
 
+  }
 
   SCHEDULE.forEach(item => {
 
@@ -1373,8 +1490,8 @@ function validateSchedule() {
         "Invalid time:",
         item.time
       );
-    }
 
+    }
 
     if (
       typeof item.duration !== "number" ||
@@ -1385,12 +1502,13 @@ function validateSchedule() {
         "Invalid duration:",
         item
       );
-    }
 
+    }
 
     if (
       ![
         "presentation",
+        "invited",
         "break",
         "other"
       ].includes(item.type)
@@ -1400,9 +1518,11 @@ function validateSchedule() {
         "Invalid type:",
         item
       );
+
     }
 
   });
+
 }
 
 
@@ -1423,5 +1543,3 @@ setInterval(
 
 </body>
 </html>
-```
-
