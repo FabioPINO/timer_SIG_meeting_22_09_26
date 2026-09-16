@@ -219,6 +219,9 @@
 
 const PRESENTATION_DURATION = 13 * 60;
 
+// Keynote presentation duration
+const KEYNOTE_DURATION = 40 * 60;
+
 // Green ends at 8:00
 const GREEN_END = 8 * 60;
 
@@ -296,8 +299,8 @@ const SCHEDULE = [
   {
     time: "09:05",
     duration: 40,
-    type: "invited",
-    message: "Invited Speaker",
+    type: "keynote",
+    message: "Keynote Presentation",
 
     presentationName:
       "Can Koopman Be Made Trustworthy for Fluid Dynamics?",
@@ -466,7 +469,7 @@ const SCHEDULE = [
   {
     time: "11:57",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Bayesian Inference of Arterial Mechanical Properties Using a One-Dimensional Blood Flow Model",
@@ -477,7 +480,7 @@ const SCHEDULE = [
   {
     time: "11:59",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Discovering dynamic controllers for wake control using partial on-body measurements",
@@ -488,7 +491,7 @@ const SCHEDULE = [
   {
     time: "12:01",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Interpretable precursors of relaminarisation in plane Couette flow",
@@ -499,7 +502,7 @@ const SCHEDULE = [
   {
     time: "12:03",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Two-Way Fluid-Structure Interaction Framework for Synthetic Jet Actuator Modelling",
@@ -510,7 +513,7 @@ const SCHEDULE = [
   {
     time: "12:05",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Stability of compressible boundary layers",
@@ -521,7 +524,7 @@ const SCHEDULE = [
     {
     time: "12:07",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Turbulence inflow generation for pipes and nozzles",
@@ -532,7 +535,7 @@ const SCHEDULE = [
     {
     time: "12:09",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Supersonic Görtler vortices excited by free-stream vortical disturbances",
@@ -543,7 +546,7 @@ const SCHEDULE = [
     {
     time: "12:11",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Data-driven inference of subgrid-scale dynamics in turbulent convection",
@@ -554,7 +557,7 @@ const SCHEDULE = [
     {
     time: "12:13",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "Application of the Diffuse Domain Method to a Bayesian Inverse Navier–Stokes Problem",
@@ -565,7 +568,7 @@ const SCHEDULE = [
   {
     time: "12:15",
     duration: 2,
-    type: "break",
+    type: "flash",
     message: "Flash talks",
     presentationName:
       "From Linear Instability to Turbulence in Mixed Convection Vertical Channel Flows",
@@ -574,8 +577,8 @@ const SCHEDULE = [
   },
 
   {
-    time: "12:15",
-    duration: 65,
+    time: "12:20",
+    duration: 60,
     type: "break",
     message: "Lunch",
     presentationName: "",
@@ -1079,6 +1082,96 @@ function getPresentationState(elapsedSeconds) {
 
 
 /* ============================================================
+   FLASH TALK TIMING
+
+   Flash talks are 2 minutes each with a continuous countdown.
+   ============================================================ */
+
+function getFlashState(elapsedSeconds) {
+  const duration = 2 * 60;
+
+  return {
+    background: GREEN,
+    text: "#ffffff",
+    countdown: Math.max(0, duration - elapsedSeconds),
+    message: "Flash Talk"
+  };
+}
+
+
+/* ============================================================
+   KEYNOTE TIMING
+
+   Same colour progression as a normal presentation, with
+   the final 3 minutes reserved for questions and hand-over:
+
+   PRESENTATION COLOUR PHASES (37 minutes)
+   GREEN   0:00 -> 29:36
+   YELLOW  29:36 -> 33:18
+   RED     33:18 -> 37:00
+
+   QUESTIONS
+   BLACK   37:00 -> 39:00 (2 minutes)
+
+   SPEAKER HAND-OVER
+   GRAY    39:00 -> 40:00 (1 minute)
+   ============================================================ */
+
+function getKeynoteState(elapsedSeconds) {
+  // Keep the keynote at 40 minutes total:
+  // 37 minutes presentation + 2 minutes questions + 1 minute hand-over.
+  const keynotePresentationEnd = 37 * 60;
+  const greenEnd = 29 * 60 + 36;
+  const yellowEnd = 33 * 60 + 18;
+  const questionsEnd = 39 * 60;
+  const keynoteEnd = KEYNOTE_DURATION;
+
+  if (elapsedSeconds < greenEnd) {
+    return {
+      background: GREEN,
+      text: "#ffffff",
+      countdown: keynotePresentationEnd - elapsedSeconds,
+      message: "Keynote Presentation"
+    };
+  }
+
+  if (elapsedSeconds < yellowEnd) {
+    return {
+      background: YELLOW,
+      text: "#111827",
+      countdown: keynotePresentationEnd - elapsedSeconds,
+      message: "Keynote Presentation"
+    };
+  }
+
+  if (elapsedSeconds < keynotePresentationEnd) {
+    return {
+      background: RED,
+      text: "#ffffff",
+      countdown: keynotePresentationEnd - elapsedSeconds,
+      message: "Keynote Presentation"
+    };
+  }
+
+  if (elapsedSeconds < questionsEnd) {
+    return {
+      background: BLACK,
+      text: "#ffffff",
+      countdown: QUESTIONS_DURATION - (elapsedSeconds - keynotePresentationEnd),
+      message: "Questions"
+    };
+  }
+
+  return {
+    background: GRAY,
+    text: "#ffffff",
+    countdown: Math.max(0, keynoteEnd - elapsedSeconds),
+    message: "Speaker Hand-over"
+  };
+}
+
+
+/* ============================================================
    UPDATE
    ============================================================ */
 
@@ -1216,13 +1309,16 @@ function update() {
 
   if (
     active.type === "presentation" ||
-    active.type === "invited"
+    active.type === "flash" ||
+    active.type === "keynote"
   ) {
 
     const state =
-      getPresentationState(
-        elapsedSeconds
-      );
+      active.type === "keynote"
+        ? getKeynoteState(elapsedSeconds)
+        : active.type === "flash"
+          ? getFlashState(elapsedSeconds)
+          : getPresentationState(elapsedSeconds);
 
 
     /*
@@ -1247,7 +1343,7 @@ function update() {
     */
 
     const isInvited =
-      active.type === "invited";
+      active.type === "keynote";
 
     document.body.classList.toggle(
       "invited-speaker",
@@ -1285,7 +1381,7 @@ function update() {
       document.getElementById("invitedLabel");
 
     invitedLabel.textContent =
-      isInvited ? "Invited Speaker" : "";
+      isInvited ? "Keynote Presentation" : "";
 
     invitedLabel.style.display =
       isInvited ? "" : "none";
@@ -1336,7 +1432,8 @@ function update() {
     */
 
     const isHandOver =
-      elapsedSeconds >= QUESTIONS_END;
+      (active.type === "presentation" && elapsedSeconds >= QUESTIONS_END) ||
+      (active.type === "keynote" && elapsedSeconds >= 39 * 60);
 
     document.getElementById("presentation").style.display =
       isHandOver ? "none" : "";
