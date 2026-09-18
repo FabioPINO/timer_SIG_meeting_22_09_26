@@ -1,605 +1,1610 @@
-/* ============================================================
-   RESPONSIVE PROGRAMME TIMER
-   Designed for:
-   - Desktop screens
-   - Tablets
-   - Mobile phones
-   - Portrait and landscape
-   ============================================================ */
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-  min-height: 100vh;
-  min-height: 100dvh;
-
-  background: #111827;
-  color: white;
-
-  transition:
-    background-color 0.4s ease,
-    color 0.4s ease;
-
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-
-/* ============================================================
-   MAIN CONTAINER
-   ============================================================ */
-
-.container {
-  width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  text-align: center;
-
-  padding:
-    clamp(20px, 5vh, 60px)
-    clamp(16px, 5vw, 60px)
-    120px;
-}
-
-
-/* ============================================================
-   MAIN MESSAGE
-   ============================================================ */
-
-.message {
-  width: 100%;
-  max-width: 1200px;
-
-  font-size: clamp(
-    1.25rem,
-    3.5vw,
-    3rem
-  );
-
-  font-weight: 600;
-  line-height: 1.2;
-
-  margin: 0 auto;
-}
-
-
-/* ============================================================
-   TIMER
-   ============================================================ */
-
-.timer {
-  width: 100%;
-
-  font-size: clamp(
-    5rem,
-    18vw,
-    16rem
-  );
-
-  font-weight: 700;
-
-  line-height: 0.9;
-
-  letter-spacing: -0.04em;
-
-  margin-top: clamp(
-    30px,
-    6vh,
-    80px
-  );
-
-  white-space: nowrap;
-}
-
-
-/* ============================================================
-   STATUS MESSAGE
-   ============================================================ */
-
-.status-message {
-  width: 100%;
-  max-width: 1000px;
-
-  margin-top: clamp(
-    20px,
-    3vh,
-    40px
-  );
-
-  font-size: clamp(
-    1.2rem,
-    3.5vw,
-    2.8rem
-  );
-
-  font-weight: 600;
-
-  line-height: 1.2;
-}
-
-
-/* ============================================================
-   PRESENTATION INFORMATION
-
-   No longer fixed to the bottom on mobile.
-   ============================================================ */
-
-.presentation-info {
-  width: calc(100% - 32px);
-  max-width: 1200px;
-
-  margin: 20px auto 100px;
-
-  text-align: center;
-
-  padding: 0 10px;
-}
-
-
-/* ============================================================
-   PRESENTATION TITLE
-   ============================================================ */
-
-.presentation {
-  width: 100%;
-
-  margin: 0 auto;
-
-  font-size: clamp(
-    1.5rem,
-    5vw,
-    5rem
-  );
-
-  font-weight: 600;
-
-  line-height: 1.15;
-
-  overflow-wrap: anywhere;
-  word-break: normal;
-}
-
-
-/* ============================================================
-   PRESENTER
-   ============================================================ */
-
-.presenter {
-  margin-top: 12px;
-
-  font-size: clamp(
-    1.25rem,
-    4vw,
-    3.2rem
-  );
-
-  font-weight: 500;
-
-  line-height: 1.2;
-
-  overflow-wrap: anywhere;
-}
-
-
-/* ============================================================
-   AFFILIATION
-   ============================================================ */
-
-.affiliation {
-  margin-top: 8px;
-
-  font-size: clamp(
-    0.9rem,
-    2.5vw,
-    1.6rem
-  );
-
-  font-weight: 400;
-
-  line-height: 1.3;
-
-  opacity: 0.85;
-
-  overflow-wrap: anywhere;
-}
-
-
-/* ============================================================
-   INVITED SPEAKER
-   ============================================================ */
-
-.invited-speaker .presentation {
-  font-size: clamp(
-    1.8rem,
-    6vw,
-    6rem
-  );
-
-  font-weight: 700;
-
-  line-height: 1.1;
-}
-
-.invited-speaker .presenter {
-  font-size: clamp(
-    1.5rem,
-    4.5vw,
-    3.8rem
-  );
-
-  font-weight: 700;
-}
-
-.invited-speaker .affiliation {
-  font-size: clamp(
-    1rem,
-    2.5vw,
-    1.8rem
-  );
-}
-
-
-/* ============================================================
-   INVITED LABEL
-   ============================================================ */
-
-.invited-label {
-  font-size: clamp(
-    0.9rem,
-    2.5vw,
-    2rem
-  );
-
-  font-weight: 700;
-
-  letter-spacing: 0.08em;
-
-  text-transform: uppercase;
-
-  margin-bottom: 15px;
-}
-
-.invited-label:empty {
-  display: none;
-}
-
-
-/* ============================================================
-   CURRENT TIME / SCHEDULE TIME
-
-   Desktop: bottom corners.
-   Mobile: bottom row.
-   ============================================================ */
-
-.current-time,
-.schedule-time {
-  position: fixed;
-
-  bottom: max(
-    10px,
-    env(safe-area-inset-bottom)
-  );
-
-  z-index: 10;
-
-  font-size: clamp(
-    0.7rem,
-    2vw,
-    1.1rem
-  );
-
-  line-height: 1;
-
-  opacity: 0.75;
-}
-
-.current-time {
-  right: max(
-    12px,
-    env(safe-area-inset-right)
-  );
-}
-
-.schedule-time {
-  left: max(
-    12px,
-    env(safe-area-inset-left)
-  );
-}
-
-
-/* ============================================================
-   MOBILE PHONES
-   ============================================================ */
-
-@media (max-width: 600px) {
+how to make this script suitable to be displayed on modile phones: 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programme Timer</title>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111827;
+    color: white;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
 
   .container {
-    min-height: auto;
-
-    padding:
-      25px
-      16px
-      90px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 6vh 4vw 3vh;
   }
 
-
+  /* Main message near the top */
   .message {
-    font-size: clamp(
-      1.15rem,
-      5vw,
-      1.6rem
-    );
-
-    line-height: 1.2;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 600;
+    margin-bottom: 1vh;
   }
 
-
+  /* Timer */
   .timer {
-    font-size: clamp(
-      5rem,
-      25vw,
-      9rem
-    );
-
-    margin-top: 35px;
-
-    letter-spacing: -0.05em;
+    font-size: clamp(6rem, 22vw, 16rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin-top: 5vh;
   }
 
-
-  .status-message {
-    font-size: clamp(
-      1.1rem,
-      5vw,
-      1.6rem
-    );
-
-    margin-top: 20px;
-  }
-
-
+  /* Presentation information */
   .presentation-info {
-    width: calc(100% - 24px);
-
-    margin-top: 30px;
-
-    margin-bottom: 80px;
-
-    padding: 0 6px;
+    position: fixed;
+    bottom: 8vh;
+    left: 5vw;
+    right: 5vw;
+    text-align: center;
   }
 
-
+  /* Presentation title */
   .presentation {
-    font-size: clamp(
-      1.35rem,
-      6vw,
-      2rem
-    );
-
+    max-width: 90%;
+    margin: 0 auto;
+    font-size: clamp(2.4rem, 5.5vw, 5rem);
+    font-weight: 600;
     line-height: 1.15;
   }
 
-
+  /* Presenter name */
   .presenter {
-    font-size: clamp(
-      1.15rem,
-      5vw,
-      1.6rem
-    );
-
-    margin-top: 12px;
+    margin-top: 1vh;
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    font-weight: 500;
   }
-
 
   .affiliation {
-    font-size: clamp(
-      0.85rem,
-      3.5vw,
-      1.1rem
-    );
-
-    margin-top: 6px;
+    margin-top: 0.5vh;
+    font-size: clamp(1rem, 2vw, 1.6rem);
+    font-weight: 400;
+    opacity: 0.85;
   }
 
+  /* Text below the timer */
+  .status-message {
+    margin-top: 2vh;
+    font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+    font-weight: 600;
+  }
+
+  .current-time {
+    position: fixed;
+    right: 2vw;
+    bottom: 1.5vh;
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+
+  .schedule-time {
+    position: fixed;
+    left: 2vw;
+    bottom: 1.5vh;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  /* ============================================================
+     SPECIAL INVITED SPEAKER PRESENTATION
+
+     This changes only the typography and layout.
+     It does not change any background or text colours.
+     ============================================================ */
 
   .invited-speaker .presentation {
-    font-size: clamp(
-      1.6rem,
-      7vw,
-      2.4rem
-    );
+    font-size: clamp(2.8rem, 6.5vw, 6rem);
+    font-weight: 700;
+    line-height: 1.1;
   }
-
 
   .invited-speaker .presenter {
-    font-size: clamp(
-      1.3rem,
-      5.5vw,
-      1.8rem
-    );
+    font-size: clamp(2.2rem, 4.8vw, 3.8rem);
+    font-weight: 700;
   }
-
 
   .invited-speaker .affiliation {
-    font-size: clamp(
-      0.9rem,
-      3.5vw,
-      1.2rem
-    );
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   }
 
-
   .invited-label {
-    font-size: clamp(
-      0.8rem,
-      3.5vw,
-      1.1rem
-    );
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.5vh;
+  }
 
-    margin-bottom: 12px;
+  /* Ensure the invited label is hidden unless needed */
+  .invited-label:empty {
+    display: none;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div id="message" class="message">Programme</div>
+
+  <div id="timer" class="timer">00:00</div>
+
+  <div id="statusMessage" class="status-message"></div>
+
+</div>
+
+<!-- Presentation information -->
+
+<div class="presentation-info">
+
+  <div id="invitedLabel" class="invited-label"></div>
+
+  <div id="presentation" class="presentation"></div>
+
+  <div id="presenter" class="presenter"></div>
+
+  <div id="affiliation" class="affiliation"></div>
+
+</div>
+
+<div id="currentTime" class="current-time">
+  00:00:00
+</div>
+
+<div id="scheduleTime" class="schedule-time"></div>
+
+
+<script>
+
+/* ============================================================
+   PRESENTATION TIMING SETTINGS
+   ============================================================
+
+   GREEN
+       0:00 -> 8:00
+
+   YELLOW
+       8:00 -> 9:00
+
+   RED
+       9:00 -> 10:00
+
+   The main presentation countdown is continuous:
+       10:00 -> 00:00
+
+   ------------------------------------------------------------
+
+   QUESTIONS
+       10:00 -> 12:00
+       Separate countdown:
+       02:00 -> 00:00
+
+   ------------------------------------------------------------
+
+   SPEAKER HAND-OVER
+       12:00 -> 13:00
+       Separate countdown:
+       01:00 -> 00:00
+
+   ============================================================ */
+
+
+/* ============================================================
+   TIMING
+   ============================================================ */
+
+const PRESENTATION_DURATION = 13 * 60;
+
+// Keynote presentation duration
+const KEYNOTE_DURATION = 40 * 60;
+
+// Green ends at 8:00
+const GREEN_END = 8 * 60;
+
+// Yellow ends at 9:00
+const YELLOW_END = 9 * 60;
+
+// Red ends / Questions start at 10:00
+const RED_END = 10 * 60;
+
+// Questions end at 12:00
+const QUESTIONS_END = 12 * 60;
+
+// Hand-over ends at 13:00
+const HANDOVER_END = 13 * 60;
+
+
+/* ============================================================
+   SEPARATE COUNTDOWN DURATIONS
+   ============================================================ */
+
+const QUESTIONS_DURATION = 2 * 60;  // 2 minutes
+
+const HANDOVER_DURATION = 60;       // 1 minute
+
+
+/* ============================================================
+   COLOURS
+
+   These remain exactly as in the original script.
+   ============================================================ */
+
+const GREEN = "#16a34a";
+const YELLOW = "#eab308";
+const RED = "#dc2626";
+const BLACK = "#000000";
+const GRAY = "#6b7280";
+
+const NORMAL_BACKGROUND = "#111827";
+const NORMAL_TEXT = "#ffffff";
+
+
+/* ============================================================
+   TIME ZONE
+   ============================================================ */
+
+const TIME_ZONE = "Europe/London";
+
+
+/* ============================================================
+   MANUAL PROGRAMME
+   ============================================================ */
+
+const SCHEDULE = [
+
+  {
+    time: "08:30",
+    duration: 30,
+    type: "other",
+    message: "Arrival",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+
+  {
+    time: "09:00",
+    duration: 5,
+    type: "other",
+    message: "Welcome",
+    presentationName: "",
+    presenter: "Prof. George Papadakis",
+    affiliation: "Imperial College London"
+  },
+
+  {
+    time: "09:05",
+    duration: 40,
+    type: "keynote",
+    message: "Keynote Presentation",
+
+    presentationName:
+      "Can Koopman Be Made Trustworthy for Fluid Dynamics?",
+
+    presenter:
+      "Matthew Colbrook",
+
+    affiliation:
+      "University of Cambridge"
+  },
+
+  {
+    time: "09:45",
+    duration: 15,
+    type: "break",
+    message: "Coffee Break",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+
+  {
+    time: "10:00",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "A Conditional Entropy Approach for the Dimensional Reduction Step in Dynamic Mode Decompositions",
+
+    presenter:
+      "Chris Keylock",
+
+    affiliation:
+      "Loughborough University"
+  },
+
+  {
+    time: "10:13",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Non-normal weakly nonlinear analysis",
+
+    presenter:
+      "Matthew McCormack",
+
+    affiliation:
+      "University of Cambridge"
+  },
+
+  {
+    time: "10:26",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Non-Markovian bilinear reduced-order modelling of partially observed non-autonomous flows",
+
+    presenter:
+      "Priyam Gupta",
+
+    affiliation:
+      "Imperial College London"
+  },
+
+  {
+    time: "10:39",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Nonlinear evolution of vortical disturbances entrained in the channel-entrance region",
+
+    presenter:
+      "Kaixin Zhu",
+
+    affiliation:
+      "Imperial College London"
+  },
+
+  {
+    time: "10:52",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Bridging Lyapunov Stability Analysis and Global Linear Stability Analysis in Chaotic Flows via Causal Time Filtering",
+
+    presenter:
+      "Sidhartha Sahu",
+
+    affiliation:
+      "Imperial College London"
+  },
+
+  {
+    time: "11:05",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Sparse Fourier reduced-order model for parallel turbulent shear flows at high Reynolds number",
+
+    presenter:
+      "Daniel Cooper",
+
+    affiliation:
+      "Imperial College London"
+  },
+
+  {
+    time: "11:18",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Chaos synchronisation with minimal-energy feedback control",
+
+    presenter:
+      "Liang Fang",
+
+    affiliation:
+      "Imperial College London"
+  },
+
+  {
+    time: "11:31",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced order modelling",
+
+    presentationName:
+      "Learning Nonlinear Dynamics of Coherent Structures from Data for Sound Generation",
+
+    presenter:
+      "Zhong-Nan Wang",
+
+    affiliation:
+      "University of Birmingham"
+  },
+
+  {
+    time: "11:44",
+    duration: 13,
+    type: "presentation",
+    message: "Session 1: Dynamical systems and reduced-order modelling",
+
+    presentationName:
+      "Reduced models for zonal-flow feedback on tidally forced inertial waves in stars and planets",
+
+    presenter:
+      "Calum Skene",
+
+    affiliation:
+      "University of Edinburgh"
+  },
+
+  {
+    time: "11:57",
+    duration: 2,
+    type: "flash",
+    message: "Flash talks",
+    presentationName:
+      "Bayesian Inference of Arterial Mechanical Properties Using a One-Dimensional Blood Flow Model",
+    presenter: "Jose H. Arnal",
+    affiliation: "University of Cambridge"
+  },
+
+  {
+    time: "11:59",
+    duration: 2,
+    type: "flash",
+    message: "Flash talks",
+    presentationName:
+      "Interpretable precursors of relaminarisation in plane Couette flow",
+    presenter: "Ananthu J P",
+    affiliation: "University of Sheffield"
+  },
+
+  {
+    time: "12:01",
+    duration: 2,
+    type: "flash",
+    message: "Flash talks",
+    presentationName:
+      "Two-Way Fluid-Structure Interaction Framework for Synthetic Jet Actuator Modelling",
+    presenter: "India Agravat",
+    affiliation: "University of Nottingham"
+  },
+
+    {
+    time: "12:03",
+    duration: 2,
+    type: "flash",
+    message: "Flash talks",
+    presentationName:
+      "Turbulence inflow generation for pipes and nozzles",
+    presenter: "Benjamin Richards",
+    affiliation: "University of Sheffield"
+  },
+
+    {
+    time: "12:05",
+    duration: 2,
+    type: "flash",
+    message: "Flash talks",
+    presentationName:
+      "Supersonic Görtler vortices excited by free-stream vortical disturbances",
+    presenter: "Dongdong Xu",
+    affiliation: "University of Leicester"
+  },
+
+    {
+    time: "12:07",
+    duration: 2,
+    type: "flash",
+    message: "Flash talks",
+    presentationName:
+      "Data-driven inference of subgrid-scale dynamics in turbulent convection",
+    presenter: "Omid Ashtari",
+    affiliation: "University of Edinburgh"
+  },
+
+    {
+    time: "12:09",
+    duration: 2,
+    type: "flash",
+    message: "Flash talks",
+    presentationName:
+      "Application of the Diffuse Domain Method to a Bayesian Inverse Navier–Stokes Problem",
+    presenter: "Davit Gyulamiryan",
+    affiliation: "University of Cambridge"
+  },
+
+  {
+    time: "12:11",
+    duration: 2,
+    type: "flash",
+    message: "Flash talks",
+    presentationName:
+      "From Linear Instability to Turbulence in Mixed Convection Vertical Channel Flows",
+    presenter: "Machaca Abregu William Ismael",
+    affiliation: "Imperial College London"
+  },
+
+  {
+    time: "12:20",
+    duration: 60,
+    type: "break",
+    message: "Lunch",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+
+  {
+    time: "13:20",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Revisiting the stability of a developing flow in the entrance region of a circular pipe",
+
+    presenter:
+      "Bo Yuan",
+
+    affiliation:
+      "University of Sheffield"
+  },
+
+  {
+    time: "13:33",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Thermomagnetic instability of Taylor-Couette flow in ferrofluids",
+
+    presenter:
+      "Junho Park",
+
+    affiliation:
+      "Coventry University"
+  },
+
+  {
+    time: "13:46",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "M-OWNS: carrier-wave factored one-way marching for efficient boundary-layer instability modelling",
+
+    presenter:
+      "Elliot James Badcock",
+
+    affiliation:
+      "Imperial College London"
+  },
+
+  {
+    time: "13:59",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Modelling, Stability and Control of Phase Changing Liquid Film",
+
+    presenter:
+      "Fabio Pino",
+
+    affiliation:
+      "University of Cambridge"
+  },
+
+  {
+    time: "14:12",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Stability of streaky high-supersonic boundary layers over cooled walls",
+
+    presenter:
+      "Pierre Ricco",
+
+    affiliation:
+      "University of Sheffield"
+  },
+
+  {
+    time: "14:25",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Global instability of shear flow produced by infinitesimal surface roughness",
+
+    presenter:
+      "Jonathan J Healey",
+
+    affiliation:
+      "Keele University"
+  },
+
+  {
+    time: "14:38",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Instabilities in swirling flows",
+
+    presenter:
+      "Oleg Kirillov",
+
+    affiliation:
+      "Northumbria University"
+  },
+
+  {
+    time: "14:51",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Effect of small-scale random roughness on stationary crossflow vortices in three-dimensional boundary layers",
+
+    presenter:
+      "Xuesong Wu",
+
+    affiliation:
+      "Imperial College London"
+  },
+
+  {
+    time: "15:04",
+    duration: 13,
+    type: "presentation",
+    message: "Session 2: Stability and Transition",
+
+    presentationName:
+      "Elasto-inertial transitions in viscoelastic flows through cylinder arrays",
+
+    presenter:
+      "Miguel Beneitez",
+
+    affiliation:
+      "University of Manchester"
+  },
+
+  {
+    time: "15:17",
+    duration: 15,
+    type: "break",
+    message: "Coffee Break and Posters",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  },
+
+  {
+    time: "15:30",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Optimised body force for heat transfer in horizontal heated pipe flow",
+
+    presenter:
+      "Ashley Willis",
+
+    affiliation:
+      "University of Sheffield"
+  },
+
+  {
+    time: "15:43",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Continuous data assimilation to estimate polymer conformation from velocity measurements",
+
+    presenter:
+      "Jacob Holford",
+
+    affiliation:
+      "University of Edinburgh"
+  },
+
+  {
+    time: "15:56",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Remember to \"forget\": overcoming the difficulty of assimilating data longer than Lyapunov time from an information theoretical perspective",
+
+    presenter:
+      "Lloyd Fung",
+
+    affiliation:
+      "Imperial College London"
+  },
+
+  {
+    time: "16:09",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Acceleration of Variational Optimisation for Finding Turbulent Invariant Solutions using Distributed Heterogeneous Computing",
+
+    presenter:
+      "Thomas Burton",
+
+    affiliation:
+      "University of Southampton"
+  },
+
+  {
+    time: "16:22",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Relaminarising turbulence via nonlinear optimisation",
+
+    presenter:
+      "Robert Charles Bennett",
+
+    affiliation:
+      "University of Sheffield"
+  },
+
+  {
+    time: "16:35",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Adjoint-based Bayesian inference for improved RANS modelling in flow MRI",
+
+    presenter:
+      "Claire Namuroy",
+
+    affiliation:
+      "University of Cambridge"
+  },
+
+  {
+    time: "16:48",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Bayesian inverse periodic Navier-Stokes problems: applications to 4D flow MRI",
+
+    presenter:
+      "Thomas Cheetham",
+
+    affiliation:
+      "University of Cambridge"
+  },
+
+  {
+    time: "17:01",
+    duration: 13,
+    type: "presentation",
+    message: "Session 3: Data-assimilation and variational optimisation",
+
+    presentationName:
+      "Resonance to rest: Modelling structural ringing in the lift response of impulsively pitched airfoils",
+
+    presenter:
+      "Christian Toma",
+
+    affiliation:
+      "University of Southampton"
+  },
+
+  {
+    time: "17:14",
+    duration: 16,
+    type: "other",
+    message: "Final comments, event closure",
+    presentationName: "",
+    presenter: "",
+    affiliation: ""
+  }
+
+];
+
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
+function timeToSeconds(time) {
+
+  const [hours, minutes] =
+    time.split(":").map(Number);
+
+  return hours * 3600 + minutes * 60;
+}
+
+
+function formatTime(seconds) {
+
+  seconds = Math.max(
+    0,
+    Math.ceil(seconds)
+  );
+
+  const minutes =
+    Math.floor(seconds / 60);
+
+  const secs =
+    seconds % 60;
+
+  return (
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(secs).padStart(2, "0")
+  );
+}
+
+
+function getLondonTimeParts() {
+
+  const now = new Date();
+
+  const parts =
+    new Intl.DateTimeFormat("en-GB", {
+
+      timeZone: TIME_ZONE,
+
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+
+      hour12: false
+
+    }).formatToParts(now);
+
+  const result = {};
+
+  parts.forEach(part => {
+
+    if (part.type !== "literal") {
+
+      result[part.type] =
+        Number(part.value);
+
+    }
+
+  });
+
+  return result;
+}
+
+
+/* ============================================================
+   PRESENTATION STATE
+   ============================================================ */
+
+function getPresentationState(elapsedSeconds) {
+
+  /*
+     GREEN
+     0:00 -> 8:00
+
+     CONTINUOUS PRESENTATION COUNTDOWN
+  */
+
+  if (elapsedSeconds < GREEN_END) {
+
+    return {
+
+      background: GREEN,
+      text: "#ffffff",
+
+      countdown:
+        RED_END - elapsedSeconds,
+
+      message:
+        "Presentation"
+
+    };
+
   }
 
 
   /*
-     Put the two small clocks on separate sides
-     and prevent them from overlapping.
+     YELLOW
+     8:00 -> 9:00
+
+     SAME COUNTDOWN CONTINUES
   */
 
-  .current-time {
-    right: 12px;
+  if (elapsedSeconds < YELLOW_END) {
+
+    return {
+
+      background: YELLOW,
+      text: "#111827",
+
+      countdown:
+        RED_END - elapsedSeconds,
+
+      message:
+        "Presentation"
+
+    };
+
   }
 
-  .schedule-time {
-    left: 12px;
 
-    max-width: 50%;
+  /*
+     RED
+     9:00 -> 10:00
 
-    white-space: nowrap;
+     SAME COUNTDOWN CONTINUES
+     AND REACHES ZERO AT 10:00
+  */
 
-    overflow: hidden;
+  if (elapsedSeconds < RED_END) {
 
-    text-overflow: ellipsis;
+    return {
+
+      background: RED,
+      text: "#ffffff",
+
+      countdown:
+        RED_END - elapsedSeconds,
+
+      message:
+        "Presentation"
+
+    };
+
   }
+
+
+  /*
+     BLACK / QUESTIONS
+     10:00 -> 12:00
+
+     RESET COUNTDOWN TO 2:00
+  */
+
+  if (elapsedSeconds < QUESTIONS_END) {
+
+    return {
+
+      background: BLACK,
+      text: "#ffffff",
+
+      countdown:
+        QUESTIONS_DURATION -
+        (elapsedSeconds - RED_END),
+
+      message:
+        "Questions"
+
+    };
+
+  }
+
+
+  /*
+     GRAY / SPEAKER HAND-OVER
+     12:00 -> 13:00
+
+     RESET COUNTDOWN TO 1:00
+  */
+
+  return {
+
+    background: GRAY,
+    text: "#ffffff",
+
+    countdown:
+      HANDOVER_DURATION -
+      (elapsedSeconds - QUESTIONS_END),
+
+    message:
+      "Speaker Hand-over"
+
+  };
+
 }
 
 
 /* ============================================================
-   VERY SMALL PHONES
+   FLASH TALK TIMING
+
+   Flash talks are 2 minutes each with a continuous countdown.
    ============================================================ */
 
-@media (max-width: 380px) {
+function getFlashState(elapsedSeconds) {
+  const duration = 2 * 60;
 
-  .container {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-
-  .timer {
-    font-size: clamp(
-      4.5rem,
-      24vw,
-      7rem
-    );
-
-    margin-top: 30px;
-  }
-
-
-  .presentation-info {
-    width: 100%;
-  }
-
-
-  .presentation {
-    font-size: 1.25rem;
-  }
-
-
-  .presenter {
-    font-size: 1.1rem;
-  }
-
-
-  .affiliation {
-    font-size: 0.8rem;
-  }
+  return {
+    background: GREEN,
+    text: "#ffffff",
+    countdown: Math.max(0, duration - elapsedSeconds),
+    message: "Flash Talk"
+  };
 }
 
 
 /* ============================================================
-   LANDSCAPE PHONES
+   KEYNOTE TIMING
+
+   Same colour progression as a normal presentation, with
+   the final 3 minutes reserved for questions and hand-over:
+
+   PRESENTATION COLOUR PHASES (37 minutes)
+   GREEN   0:00 -> 29:36
+   YELLOW  29:36 -> 33:18
+   RED     33:18 -> 37:00
+
+   QUESTIONS
+   BLACK   37:00 -> 39:00 (2 minutes)
+
+   SPEAKER HAND-OVER
+   GRAY    39:00 -> 40:00 (1 minute)
    ============================================================ */
 
-@media (max-height: 500px) and (orientation: landscape) {
+function getKeynoteState(elapsedSeconds) {
+  // Keep the keynote at 40 minutes total:
+  // 37 minutes presentation + 2 minutes questions + 1 minute hand-over.
+  const keynotePresentationEnd = 37 * 60;
+  const greenEnd = 29 * 60 + 36;
+  const yellowEnd = 33 * 60 + 18;
+  const questionsEnd = 39 * 60;
+  const keynoteEnd = KEYNOTE_DURATION;
 
-  .container {
-    min-height: auto;
-
-    padding:
-      15px
-      20px
-      70px;
+  if (elapsedSeconds < greenEnd) {
+    return {
+      background: GREEN,
+      text: "#ffffff",
+      countdown: keynotePresentationEnd - elapsedSeconds,
+      message: "Keynote Presentation"
+    };
   }
 
-
-  .message {
-    font-size: 1.1rem;
+  if (elapsedSeconds < yellowEnd) {
+    return {
+      background: YELLOW,
+      text: "#111827",
+      countdown: keynotePresentationEnd - elapsedSeconds,
+      message: "Keynote Presentation"
+    };
   }
 
-
-  .timer {
-    font-size: clamp(
-      4rem,
-      18vh,
-      7rem
-    );
-
-    margin-top: 15px;
+  if (elapsedSeconds < keynotePresentationEnd) {
+    return {
+      background: RED,
+      text: "#ffffff",
+      countdown: keynotePresentationEnd - elapsedSeconds,
+      message: "Keynote Presentation"
+    };
   }
 
-
-  .status-message {
-    font-size: 1rem;
-
-    margin-top: 10px;
+  if (elapsedSeconds < questionsEnd) {
+    return {
+      background: BLACK,
+      text: "#ffffff",
+      countdown: QUESTIONS_DURATION - (elapsedSeconds - keynotePresentationEnd),
+      message: "Questions"
+    };
   }
 
-
-  .presentation-info {
-    margin-top: 20px;
-    margin-bottom: 60px;
-  }
-
-
-  .presentation {
-    font-size: clamp(
-      1.2rem,
-      4vw,
-      2rem
-    );
-  }
-
-
-  .presenter {
-    font-size: clamp(
-      1rem,
-      3vw,
-      1.5rem
-    );
-  }
-
-
-  .affiliation {
-    font-size: 0.85rem;
-  }
+  return {
+    background: GRAY,
+    text: "#ffffff",
+    countdown: Math.max(0, keynoteEnd - elapsedSeconds),
+    message: "Speaker Hand-over"
+  };
 }
 
 
 /* ============================================================
-   REDUCED MOTION
+   UPDATE
    ============================================================ */
 
-@media (prefers-reduced-motion: reduce) {
+function update() {
 
-  body {
-    transition: none;
+  const london =
+    getLondonTimeParts();
+
+  const currentSeconds =
+    london.hour * 3600 +
+    london.minute * 60 +
+    london.second;
+
+
+  /*
+     Current London time
+  */
+
+  document.getElementById(
+    "currentTime"
+  ).textContent =
+
+    `${String(london.hour).padStart(2, "0")}:` +
+    `${String(london.minute).padStart(2, "0")}:` +
+    `${String(london.second).padStart(2, "0")}`;
+
+
+  /*
+     Find current programme item
+  */
+
+  let active = null;
+
+  for (
+    let i = 0;
+    i < SCHEDULE.length;
+    i++
+  ) {
+
+    const start =
+      timeToSeconds(
+        SCHEDULE[i].time
+      );
+
+    const end =
+      start +
+      SCHEDULE[i].duration * 60;
+
+    if (
+      currentSeconds >= start &&
+      currentSeconds < end
+    ) {
+
+      active =
+        SCHEDULE[i];
+
+      break;
+
+    }
+
   }
+
+
+  /*
+     Nothing scheduled
+  */
+
+  if (!active) {
+
+    document.body.style.backgroundColor =
+      NORMAL_BACKGROUND;
+
+    document.body.style.color =
+      NORMAL_TEXT;
+
+    // Remove any special invited-speaker layout.
+    document.body.classList.remove("invited-speaker");
+
+    document.getElementById(
+      "message"
+    ).textContent =
+      "Programme";
+
+    document.getElementById(
+      "timer"
+    ).textContent =
+      "--:--";
+
+    document.getElementById("presentation").textContent = "";
+    document.getElementById("presentation").style.display = "";
+
+    document.getElementById("presenter").textContent = "";
+    document.getElementById("presenter").style.display = "";
+
+    document.getElementById("affiliation").textContent = "";
+    document.getElementById("affiliation").style.display = "";
+
+    document.getElementById("invitedLabel").textContent = "";
+    document.getElementById("invitedLabel").style.display = "none";
+
+    document.getElementById(
+      "statusMessage"
+    ).textContent = "";
+
+    document.getElementById(
+      "scheduleTime"
+    ).textContent = "";
+
+    return;
+
+  }
+
+
+  const startSeconds =
+    timeToSeconds(active.time);
+
+  const elapsedSeconds =
+    currentSeconds -
+    startSeconds;
+
+
+  /*
+     Programme start time
+  */
+
+  document.getElementById(
+    "scheduleTime"
+  ).textContent =
+    `Programme: ${active.time}`;
+
+
+  /* ==========================================================
+     PRESENTATIONS AND INVITED SPEAKERS
+     ========================================================== */
+
+  if (
+    active.type === "presentation" ||
+    active.type === "flash" ||
+    active.type === "keynote"
+  ) {
+
+    const state =
+      active.type === "keynote"
+        ? getKeynoteState(elapsedSeconds)
+        : active.type === "flash"
+          ? getFlashState(elapsedSeconds)
+          : getPresentationState(elapsedSeconds);
+
+
+    /*
+       Background colour
+
+       This remains controlled exclusively by the
+       existing presentation timing state.
+    */
+
+    document.body.style.backgroundColor =
+      state.background;
+
+    document.body.style.color =
+      state.text;
+
+
+    /*
+       Apply special invited-speaker layout.
+
+       This changes typography only.
+       It does not change colours.
+    */
+
+    const isInvited =
+      active.type === "keynote";
+
+    document.body.classList.toggle(
+      "invited-speaker",
+      isInvited
+    );
+
+
+    /*
+       Countdown
+    */
+
+    document.getElementById(
+      "timer"
+    ).textContent =
+      formatTime(
+        state.countdown
+      );
+
+
+    /*
+       Main message
+    */
+
+    document.getElementById(
+      "message"
+    ).textContent =
+      active.message;
+
+
+    /*
+       Invited speaker label
+    */
+
+    const invitedLabel =
+      document.getElementById("invitedLabel");
+
+    invitedLabel.textContent =
+      isInvited ? "Keynote Presentation" : "";
+
+    invitedLabel.style.display =
+      isInvited ? "" : "none";
+
+
+    /*
+       Presentation title
+    */
+
+    document.getElementById(
+      "presentation"
+    ).textContent =
+      active.presentationName;
+
+
+    /*
+       Presenter
+    */
+
+    document.getElementById(
+      "presenter"
+    ).textContent =
+      active.presenter;
+
+
+    /*
+       Affiliation
+    */
+
+    document.getElementById(
+      "affiliation"
+    ).textContent =
+      active.affiliation;
+
+
+    /*
+       Status
+    */
+
+    document.getElementById(
+      "statusMessage"
+    ).textContent =
+      state.message;
+
+
+    /*
+       Hide presentation details during speaker hand-over.
+    */
+
+    const isHandOver =
+      (active.type === "presentation" && elapsedSeconds >= QUESTIONS_END) ||
+      (active.type === "keynote" && elapsedSeconds >= 39 * 60);
+
+    document.getElementById("presentation").style.display =
+      isHandOver ? "none" : "";
+
+    document.getElementById("presenter").style.display =
+      isHandOver ? "none" : "";
+
+    document.getElementById("affiliation").style.display =
+      isHandOver ? "none" : "";
+
+    document.getElementById("invitedLabel").style.display =
+      isHandOver ? "none" : (isInvited ? "" : "none");
+
+  }
+
+
+  /* ==========================================================
+     BREAKS AND OTHER PROGRAMME ITEMS
+     ========================================================== */
+
+  else {
+
+    document.body.style.backgroundColor =
+      NORMAL_BACKGROUND;
+
+    document.body.style.color =
+      NORMAL_TEXT;
+
+    // Remove the invited-speaker layout.
+    document.body.classList.remove("invited-speaker");
+
+
+    const remainingSeconds =
+      active.duration * 60 -
+      elapsedSeconds;
+
+
+    /*
+       Countdown
+    */
+
+    document.getElementById(
+      "timer"
+    ).textContent =
+      formatTime(
+        remainingSeconds
+      );
+
+
+    /*
+       Main message
+    */
+
+    document.getElementById(
+      "message"
+    ).textContent =
+      active.message;
+
+
+    /*
+       Clear presentation details
+    */
+
+    document.getElementById("presentation").textContent = "";
+    document.getElementById("presentation").style.display = "";
+
+    document.getElementById("presenter").textContent = "";
+    document.getElementById("presenter").style.display = "";
+
+    document.getElementById("affiliation").textContent = "";
+    document.getElementById("affiliation").style.display = "";
+
+    document.getElementById("invitedLabel").textContent = "";
+    document.getElementById("invitedLabel").style.display = "none";
+
+
+    /*
+       Clear status
+    */
+
+    document.getElementById(
+      "statusMessage"
+    ).textContent = "";
+
+  }
+
 }
+
+
+/* ============================================================
+   VALIDATION
+   ============================================================ */
+
+function validateSchedule() {
+
+  if (GREEN_END >= YELLOW_END) {
+
+    console.error(
+      "GREEN_END must be before YELLOW_END."
+    );
+
+  }
+
+  if (YELLOW_END >= RED_END) {
+
+    console.error(
+      "YELLOW_END must be before RED_END."
+    );
+
+  }
+
+  if (RED_END >= QUESTIONS_END) {
+
+    console.error(
+      "RED_END must be before QUESTIONS_END."
+    );
+
+  }
+
+  if (QUESTIONS_END >= HANDOVER_END) {
+
+    console.error(
+      "QUESTIONS_END must be before HANDOVER_END."
+    );
+
+  }
+
+  if (HANDOVER_END > PRESENTATION_DURATION) {
+
+    console.error(
+      "HANDOVER_END must not exceed PRESENTATION_DURATION."
+    );
+
+  }
+
+  SCHEDULE.forEach(item => {
+
+    if (!/^\d{2}:\d{2}$/.test(item.time)) {
+
+      console.error(
+        "Invalid time:",
+        item.time
+      );
+
+    }
+
+    if (
+      typeof item.duration !== "number" ||
+      item.duration <= 0
+    ) {
+
+      console.error(
+        "Invalid duration:",
+        item
+      );
+
+    }
+
+    if (
+      ![
+        "presentation",
+        "invited",
+        "break",
+        "other"
+      ].includes(item.type)
+    ) {
+
+      console.error(
+        "Invalid type:",
+        item
+      );
+
+    }
+
+  });
+
+}
+
+
+/* ============================================================
+   START
+   ============================================================ */
+
+validateSchedule();
+
+update();
+
+setInterval(
+  update,
+  250
+);
+
+</script>
+
+</body>
+</html>
