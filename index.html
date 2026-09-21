@@ -7,23 +7,27 @@
 
 <style>
   /* ============================================================
-     RESPONSIVE LAYOUT
+     SCREEN-ADAPTIVE LAYOUT
 
-     All text sizes are based on BOTH the screen width and height
-     (min(vh, vw)), so the display scales correctly on any
-     projector or screen shape (4:3, 16:9, 16:10, portrait...).
+     All text sizes are calculated by the script at the bottom of
+     this page from the real visible size of the screen (projector,
+     laptop, iPad, phone, portrait or landscape):
 
-     The screen is split into fixed regions that can never overlap:
+       - the countdown is made as large as the screen allows
+         (up to 36% of the screen height and 90% of its width)
+       - all other text is then sized to fill the remaining space,
+         shrinking automatically when a title or session name is long
+       - sizes are recalculated whenever the window is resized,
+         the device is rotated or full-screen mode is switched
 
-       top     - session / programme message
-       middle  - timer + status (Presentation / Questions ...)
-       bottom  - title, presenter, affiliation
-       footer  - programme start time + current time
-
-     If the text in a region is too long for its space (e.g. a very
-     long presentation title), a small script shrinks that region's
-     text proportionally until it fits.
+     Colours are unchanged: they are set by the timing script.
      ============================================================ */
+
+  html {
+    /* Stop iPhone / iPad Safari enlarging text in landscape */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
 
   html, body {
     margin: 0;
@@ -32,6 +36,7 @@
     height: 100%;
     overflow: hidden;
     font-family: Arial, Helvetica, sans-serif;
+    touch-action: manipulation;   /* no accidental double-tap zoom on iPad/phone */
   }
 
   body {
@@ -40,103 +45,124 @@
     transition: background-color 0.4s ease, color 0.4s ease;
   }
 
+  /* Covers exactly the visible part of the screen. (On phones and
+     tablets, "100vh" can extend behind the browser's toolbars.) */
   .screen {
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    display: grid;
-    grid-template-rows: 15% 1fr 36% 5%;
-    box-sizing: border-box;
-    padding: 3vh 4vw 0;
-    text-align: center;
-  }
-
-  /* Each region is a fixed box; its content is scaled to fit */
-  .region {
-    position: relative;
-    min-height: 0;
-    min-width: 0;
-    overflow: hidden;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    box-sizing: border-box;
+    padding: 3vh 4vw 1.5vh;
+    text-align: center;
+
+    /* Starting sizes only: the script replaces all of these */
+    --fs-message: 5vh;
+    --fs-timer: 30vh;
+    --fs-status: 5vh;
+    --fs-label: 3vh;
+    --fs-title: 6vh;
+    --fs-presenter: 4.5vh;
+    --fs-affil: 3vh;
+    --fs-footer: 2.4vh;
   }
 
-  .region-top    { justify-content: center; --scale: 1; }
-  .region-middle { justify-content: center; --scale: 1; }
-  .region-bottom { justify-content: flex-end; --scale: 1; }
+  /* Message, timer and presentation details, spread top-to-bottom */
+  .stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 
-  .fit-inner {
-    width: 100%;
+  .group {
+    flex: 0 0 auto;
     overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .group-middle {
+    position: relative;
   }
 
   /* Main message near the top */
   .message {
-    font-size: calc(min(6vh, 4.2vw) * var(--scale));
+    font-size: var(--fs-message);
     font-weight: 600;
     line-height: 1.15;
   }
 
   /* Timer */
-  .timer {
-    font-size: calc(min(36vh, 26vw) * var(--scale));
+  .timer,
+  .timer-probe {
+    font-size: var(--fs-timer);
     font-weight: 700;
-    line-height: 0.95;
+    line-height: 0.9;
     letter-spacing: -0.04em;
-    font-variant-numeric: tabular-nums;
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Invisible copy of "00:00", used to measure the timer width */
+  .timer-probe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   /* Text below the timer */
   .status-message {
-    margin-top: 1.5vh;
-    font-size: calc(min(6vh, 4vw) * var(--scale));
+    margin-top: 0.3em;
+    font-size: var(--fs-status);
     font-weight: 600;
     line-height: 1.1;
   }
 
-  .status-message:empty {
-    display: none;
-  }
-
   /* Presentation title */
   .presentation {
-    max-width: 95%;
-    margin: 0 auto;
-    font-size: calc(min(7.5vh, 5.2vw) * var(--scale));
+    font-size: var(--fs-title);
     font-weight: 600;
     line-height: 1.15;
   }
 
   /* Presenter name */
   .presenter {
-    margin-top: 1.2vh;
-    font-size: calc(min(5.5vh, 4vw) * var(--scale));
+    margin-top: 0.3em;
+    font-size: var(--fs-presenter);
     font-weight: 500;
     line-height: 1.15;
   }
 
   .affiliation {
-    margin-top: 0.6vh;
-    font-size: calc(min(3.6vh, 2.4vw) * var(--scale));
+    margin-top: 0.2em;
+    font-size: var(--fs-affil);
     font-weight: 400;
     line-height: 1.2;
     opacity: 0.85;
   }
 
+  .status-message:empty,
   .presentation:empty,
   .presenter:empty,
   .affiliation:empty {
     display: none;
   }
 
-  /* Footer */
+  /* Footer: programme start time (left) and current time (right) */
   .footer {
+    flex: 0 0 auto;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    font-size: min(2.4vh, 1.6vw);
+    align-items: flex-end;
+    padding-top: 0.3em;
+    font-size: var(--fs-footer);
+    line-height: 1.2;
     white-space: nowrap;
   }
 
@@ -154,29 +180,26 @@
 
      This changes only the typography and layout.
      It does not change any background or text colours.
+     (Its larger text sizes are set in KEYNOTE_TEXT_SIZES
+     in the script.)
      ============================================================ */
 
   .invited-speaker .presentation {
-    font-size: calc(min(8.5vh, 6vw) * var(--scale));
     font-weight: 700;
     line-height: 1.1;
   }
 
   .invited-speaker .presenter {
-    font-size: calc(min(6.5vh, 4.8vw) * var(--scale));
     font-weight: 700;
-  }
-
-  .invited-speaker .affiliation {
-    font-size: calc(min(4vh, 2.7vw) * var(--scale));
   }
 
   .invited-label {
-    font-size: calc(min(3.6vh, 2.5vw) * var(--scale));
+    font-size: var(--fs-label);
     font-weight: 700;
+    line-height: 1.2;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 1.5vh;
+    margin-bottom: 0.5em;
   }
 
   /* Ensure the invited label is hidden unless needed */
@@ -188,29 +211,28 @@
 
 <body>
 
-<div class="screen">
+<div id="screen" class="screen">
 
-  <div id="regionTop" class="region region-top">
-    <div class="fit-inner">
+  <div id="stage" class="stage">
+
+    <div id="groupTop" class="group group-top">
       <div id="message" class="message">Programme</div>
     </div>
-  </div>
 
-  <div id="regionMiddle" class="region region-middle">
-    <div class="fit-inner">
+    <div id="groupMiddle" class="group group-middle">
       <div id="timer" class="timer">00:00</div>
       <div id="statusMessage" class="status-message"></div>
+      <span id="timerProbe" class="timer-probe" aria-hidden="true">00:00</span>
     </div>
-  </div>
 
-  <!-- Presentation information -->
-  <div id="regionBottom" class="region region-bottom presentation-info">
-    <div class="fit-inner">
+    <!-- Presentation information -->
+    <div id="groupBottom" class="group group-bottom presentation-info">
       <div id="invitedLabel" class="invited-label"></div>
       <div id="presentation" class="presentation"></div>
       <div id="presenter" class="presenter"></div>
       <div id="affiliation" class="affiliation"></div>
     </div>
+
   </div>
 
   <div class="footer">
@@ -815,66 +837,187 @@ function getLondonTimeParts() {
 
 
 /* ============================================================
-   AUTO-FIT TEXT TO THE SCREEN
+   TEXT SIZES - ADAPT TO THE SCREEN
 
-   Each region (top / middle / bottom) has a fixed share of the
-   screen. If its text does not fit, the region's --scale value
-   is reduced (binary search) until everything fits.
+   Each value is the LARGEST size a text may have, as a fraction
+   of the screen height (h) and of the screen width (w). The
+   smaller of the two is used, so the same settings work on a
+   wide projector, a laptop, an iPad and a phone held upright.
 
-   Fitting only re-runs when the displayed text, layout mode or
-   screen size changes, so it costs nothing during normal ticks.
+   If everything does not fit (e.g. a very long title), all the
+   text is reduced together until it fits. The countdown keeps
+   its size unless the screen is extremely small.
    ============================================================ */
 
-const MIN_SCALE = 0.25;
+const TEXT_SIZES = {
+  message:   { h: 0.060, w: 0.070 },  // session name at the top
+  status:    { h: 0.055, w: 0.065 },  // Presentation / Questions / ...
+  label:     { h: 0.036, w: 0.045 },  // KEYNOTE PRESENTATION label
+  title:     { h: 0.075, w: 0.080 },  // presentation title
+  presenter: { h: 0.055, w: 0.060 },  // presenter name
+  affil:     { h: 0.036, w: 0.045 }   // affiliation
+};
 
-function fitRegion(region) {
-  const inner = region.querySelector(".fit-inner");
+// Larger title and presenter for the keynote
+const KEYNOTE_TEXT_SIZES = {
+  title:     { h: 0.085, w: 0.090 },
+  presenter: { h: 0.065, w: 0.070 },
+  affil:     { h: 0.040, w: 0.050 }
+};
 
-  const fits = () =>
-    inner.scrollHeight <= region.clientHeight + 1 &&
-    inner.scrollWidth <= region.clientWidth + 1;
+// Countdown: up to 36% of the screen height and 90% of its width
+const TIMER_MAX_HEIGHT = 0.36;
+const TIMER_MAX_WIDTH = 0.90;
 
-  region.style.setProperty("--scale", 1);
-  if (fits()) return;
+// Smallest reduction applied to the text before the countdown
+// itself is also reduced (only happens on tiny screens)
+const MIN_TEXT_SCALE = 0.45;
 
-  let lo = MIN_SCALE;
-  let hi = 1;
 
-  for (let i = 0; i < 10; i++) {
-    const mid = (lo + hi) / 2;
-    region.style.setProperty("--scale", mid);
-    if (fits()) lo = mid; else hi = mid;
-  }
+const screenEl = document.getElementById("screen");
+const stageEl = document.getElementById("stage");
+const groupTop = document.getElementById("groupTop");
+const groupMiddle = document.getElementById("groupMiddle");
+const groupBottom = document.getElementById("groupBottom");
+const timerEl = document.getElementById("timer");
+const timerProbe = document.getElementById("timerProbe");
 
-  region.style.setProperty("--scale", lo);
+
+function setSize(name, px) {
+  screenEl.style.setProperty("--fs-" + name, px.toFixed(2) + "px");
 }
 
 
+function textWidth(el) {
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  return range.getBoundingClientRect().width;
+}
+
+
+function fitToScreen() {
+
+  // Real visible area (excludes browser toolbars on phones/tablets)
+  const W = screenEl.clientWidth;
+  const H = screenEl.clientHeight;
+
+  if (W < 40 || H < 40) return;
+
+  // Margins around the screen edge
+  screenEl.style.padding =
+    Math.round(0.03 * H) + "px " +
+    Math.round(0.04 * W) + "px " +
+    Math.round(0.015 * H) + "px";
+
+  // Footer: programme time and clock
+  setSize("footer", Math.max(10, Math.min(0.026 * H, 0.034 * W)));
+
+  // Largest size of each text for this screen
+  const isKeynote = document.body.classList.contains("invited-speaker");
+  const caps = {};
+
+  Object.keys(TEXT_SIZES).forEach(key => {
+    const r = (isKeynote && KEYNOTE_TEXT_SIZES[key]) || TEXT_SIZES[key];
+    caps[key] = Math.min(r.h * H, r.w * W);
+  });
+
+  // Space left for message + timer + presentation details
+  const stageW = stageEl.clientWidth;
+  const stageH = stageEl.clientHeight;
+
+  // Measure the countdown width at 100px, then scale it to the screen
+  setSize("timer", 100);
+  const timerWidthAt100 =
+    Math.max(textWidth(timerProbe), textWidth(timerEl), 1);
+
+  const timerMax = Math.min(
+    TIMER_MAX_HEIGHT * H,
+    TIMER_MAX_WIDTH * stageW * 100 / timerWidthAt100
+  );
+
+  // Minimum empty space kept between the three blocks
+  const minGap = 0.025 * H;
+
+  function apply(textScale, timerScale) {
+    Object.keys(caps).forEach(key => setSize(key, caps[key] * textScale));
+    setSize("timer", timerMax * timerScale);
+  }
+
+  function fits() {
+    const bottom = groupBottom.offsetHeight;
+    const used =
+      groupTop.offsetHeight +
+      groupMiddle.offsetHeight +
+      bottom +
+      (bottom > 0 ? 2 : 1) * minGap;
+
+    return used <= stageH && stageEl.scrollWidth <= stageW + 1;
+  }
+
+  // 1) Everything at full size
+  apply(1, 1);
+  if (fits()) return;
+
+  // 2) Reduce the text, keep the countdown at full size
+  apply(MIN_TEXT_SCALE, 1);
+
+  if (fits()) {
+    let lo = MIN_TEXT_SCALE;
+    let hi = 1;
+
+    for (let i = 0; i < 12; i++) {
+      const mid = (lo + hi) / 2;
+      apply(mid, 1);
+      if (fits()) lo = mid; else hi = mid;
+    }
+
+    apply(lo, 1);
+    return;
+  }
+
+  // 3) Very small screen: reduce text and countdown together
+  let lo = 0.05;
+  let hi = 1;
+
+  for (let i = 0; i < 14; i++) {
+    const mid = (lo + hi) / 2;
+    apply(MIN_TEXT_SCALE * mid, mid);
+    if (fits()) lo = mid; else hi = mid;
+  }
+
+  apply(MIN_TEXT_SCALE * lo, lo);
+}
+
+
+// Re-fit only when something that affects the layout has changed
+// (screen size, displayed text, keynote style).
+
 let lastFitSignature = "";
 
-function fitAll(force) {
+function fitIfChanged(force) {
   const ids = [
     "message", "statusMessage", "invitedLabel",
     "presentation", "presenter", "affiliation"
   ];
 
-  const signature = [
-    window.innerWidth,
-    window.innerHeight,
+  const parts = [
+    screenEl.clientWidth,
+    screenEl.clientHeight,
     document.body.className,
-    document.getElementById("timer").textContent.length,
-    ...ids.map(id => {
-      const el = document.getElementById(id);
-      return el.style.display + "|" + el.textContent;
-    })
-  ].join("§");
+    timerEl.textContent.length
+  ];
+
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    parts.push(el.style.display + "|" + el.textContent);
+  });
+
+  const signature = parts.join("||");
 
   if (!force && signature === lastFitSignature) return;
-  lastFitSignature = signature;
 
-  fitRegion(document.getElementById("regionTop"));
-  fitRegion(document.getElementById("regionMiddle"));
-  fitRegion(document.getElementById("regionBottom"));
+  lastFitSignature = signature;
+  fitToScreen();
 }
 
 
@@ -1173,7 +1316,7 @@ function render() {
 
 function update() {
   render();
-  fitAll(false);
+  fitIfChanged(false);
 }
 
 
@@ -1234,10 +1377,25 @@ update();
 
 setInterval(update, 250);
 
-// Re-fit whenever the window / projector resolution changes
-// (e.g. entering full-screen or moving to another display).
-window.addEventListener("resize", () => fitAll(true));
-document.addEventListener("fullscreenchange", () => fitAll(true));
+// Re-fit when the screen changes: window resized, phone/tablet
+// rotated, full-screen switched, or moved to the projector.
+// (The 250 ms update also notices any size change.)
+function refitSoon() {
+  fitIfChanged(true);
+  setTimeout(() => fitIfChanged(true), 300);
+}
+
+window.addEventListener("resize", refitSoon);
+window.addEventListener("orientationchange", refitSoon);
+document.addEventListener("fullscreenchange", refitSoon);
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", refitSoon);
+}
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(refitSoon);
+}
 
 </script>
 
